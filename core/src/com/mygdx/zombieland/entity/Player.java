@@ -12,8 +12,6 @@ import com.mygdx.zombieland.entity.projectile.ProjectileSource;
 import com.mygdx.zombieland.inventory.InventoryItem;
 import com.mygdx.zombieland.location.Location;
 import com.mygdx.zombieland.location.Vector2D;
-import com.mygdx.zombieland.runnable.ReloadRunnable;
-import com.mygdx.zombieland.runnable.ShootingRunnable;
 import com.mygdx.zombieland.state.GameState;
 import com.mygdx.zombieland.utils.VisualizeHelper;
 import com.mygdx.zombieland.weapon.Gun;
