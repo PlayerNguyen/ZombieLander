@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.MathUtils;
 import com.mygdx.zombieland.World;
 import com.mygdx.zombieland.entity.projectile.ProjectileSource;
 import com.mygdx.zombieland.inventory.InventoryItem;
@@ -74,6 +75,7 @@ public class Player extends DamageableAbstract
 
         // Switch item
         this.handleSwitch();
+//        this.world.getCamera().translate(this.getCenterLocation().x - (400), this.getCenterLocation().y - 300);
 
         // Draw/Render the player
         this.sprite.setX(this.getCenterLocation().x);
@@ -90,6 +92,8 @@ public class Player extends DamageableAbstract
                     || Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
                 this.shoot();
             }
+
+
         }
 
         // Draw a player
@@ -134,12 +138,22 @@ public class Player extends DamageableAbstract
      * The direction is set by radRotation.
      */
     private void rotateFollowsCursor() {
-        float radRotation = (float) ((float)
-                Math.atan2(-(this.location.y - Gdx.input.getY()),// Minus because y-down
-                        this.location.x - Gdx.input.getX()) + (Math.PI)
-        );
-        this.setRotation((float) Math.toDegrees(radRotation));
+//        System.out.println(this.location);
+//        System.out.println(Gdx.input.getY());
+//        float radRotation = (float) ((float)
+//                Math.atan2(-(this.location.y - Gdx.input.getY()),// Minus because y-down
+//                        this.location.x - Gdx.input.getX()) + (Math.PI)
+//        );
+//        this.setRotation((float) Math.toDegrees(radRotation));
 
+        float mouseX = Gdx.input.getX();
+        float mouseY = Gdx.graphics.getHeight() - Gdx.input.getY(); // Invert Y-axis
+
+        // Calculate the direction vector
+        float deltaX = mouseX - this.location.x;
+        float deltaY = mouseY - this.location.y;
+        float radRotation = (float) Math.atan2(deltaY, deltaX);
+        this.setRotation(MathUtils.radiansToDegrees * radRotation);
         // Set the direction by using basic geometry
         this.direction.x = Math.cos(radRotation);
         this.direction.y = Math.sin(radRotation);
@@ -158,6 +172,26 @@ public class Player extends DamageableAbstract
                 this.world,
                 ((Gun)currentHandItem.getWeapon()).getShootDelay())
         ).start();
+    }
+
+    public void moveUp(){
+        Vector2D v = new Vector2D(0,2);
+
+        this.location.add(v);
+    }
+    public void moveDown(){
+        Vector2D v = new Vector2D(0,-2);
+        this.location.add(v);
+    }
+
+    public void moveLeft(){
+        Vector2D v = new Vector2D(-2,0);
+        this.location.add(v);
+    }
+
+    public void moveRight(){
+        Vector2D v = new Vector2D(2,0);
+        this.location.add(v);
     }
 
     @Override
