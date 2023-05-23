@@ -15,7 +15,7 @@ public class DesktopLauncher {
         config.setResizable(false);
         config.setForegroundFPS(60);
         config.setTitle(String.format("ZombieLand [ %s ]", ZombieLandMain.gameVersion));
-        config.setWindowedMode(1280, 720);
+        config.setWindowedMode(800, 600);
 
         new Lwjgl3Application(zombieLandMain, config);
     }
