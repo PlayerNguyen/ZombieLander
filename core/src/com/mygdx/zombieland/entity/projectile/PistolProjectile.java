@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.zombieland.World;
 import com.mygdx.zombieland.entity.Entity;
 import com.mygdx.zombieland.location.Location;
+import com.mygdx.zombieland.runnable.DamageEntityOnShootRunnable;
 import com.mygdx.zombieland.utils.MathHelper;
 import com.mygdx.zombieland.utils.RayHelper;
 import com.mygdx.zombieland.utils.VisualizeHelper;
