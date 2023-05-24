@@ -45,6 +45,9 @@ public class World implements Renderable {
     private static final Texture LOGO_TEXTURE = new Texture(Gdx.files.internal("logo.png"));
     private static final Music BGM_SOUND = Gdx.audio.newMusic(Gdx.files.internal("audio/BGM.mp3"));
 
+
+
+
     public SpriteBatch batch;
     public BitmapFont font;
     private Player player;
@@ -269,6 +272,9 @@ public class World implements Renderable {
                             return true;
                         }
 
+
+
+
                         // Debug shortcut
                         if (keycode == Input.Keys.F3) {
                             getTextIndicator().createText(new Location(getPlayer().getLocation()).add(-64, 64),
@@ -285,6 +291,8 @@ public class World implements Renderable {
 
                     @Override
                     public boolean keyUp(int keycode) {
+
+
                         return false;
                     }
 
