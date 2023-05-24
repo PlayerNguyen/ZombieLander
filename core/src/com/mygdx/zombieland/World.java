@@ -3,7 +3,6 @@ package com.mygdx.zombieland;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,8 +14,6 @@ import com.badlogic.gdx.utils.Align;
 import com.mygdx.zombieland.effects.TextIndicator;
 import com.mygdx.zombieland.entity.Entity;
 import com.mygdx.zombieland.entity.Player;
-import com.mygdx.zombieland.entity.enemy.Zombie;
-import com.mygdx.zombieland.entity.enemy.ZombieType;
 import com.mygdx.zombieland.entity.projectile.Projectile;
 import com.mygdx.zombieland.hud.HUD;
 import com.mygdx.zombieland.inventory.Inventory;
@@ -43,7 +40,7 @@ public class World implements Renderable {
     private static final int WINDOW_HEIGHT = 600;
     private static final Texture BACKGROUND_TEXTURE = new Texture(Gdx.files.internal("background.png"));
     private static final Texture LOGO_TEXTURE = new Texture(Gdx.files.internal("logo.png"));
-    private static final Music BGM_SOUND = Gdx.audio.newMusic(Gdx.files.internal("audio/BGM.mp3"));
+//    private static final Music BGM_SOUND = Gdx.audio.newMusic(Gdx.files.internal("audio/BGM.mp3"));
 
     private static boolean isMoveUp = false;
 
@@ -254,17 +251,11 @@ public class World implements Renderable {
                 this.hud.render();
 
                 // Music pause
-                if (this.getGameState() == PAUSING && BGM_SOUND.isPlaying()) {
-                    BGM_SOUND.pause();
-                }
-
-                if (this.getGameState() == PLAYING && !BGM_SOUND.isPlaying()) {
-                    BGM_SOUND.play();
-                }
                 if(isMoveUp) player.moveUp();
                 if(isMoveDown) player.moveDown();
                 if(isMoveLeft) player.moveLeft();
                 if(isMoveRight) player.moveRight();
+              
                 // Esc to pause
                 Gdx.input.setInputProcessor(new InputProcessor() {
                     @Override
