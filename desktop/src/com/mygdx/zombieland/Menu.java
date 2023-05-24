@@ -14,12 +14,13 @@ public final class Menu {
     private static final int FRAME_HEIGHT = 630;
     private final JFrame gameFrame =  new JFrame();
     private final int START_BUTTON_X = 600;
-    private final int START_BUTTON_Y = 300;
+    private final int START_BUTTON_Y = 200;
     private final int QUIT_BUTTON_X = 600;
     private final int QUIT_BUTTON_Y = 500;
-
     private final int RULES_BUTTON_X = 600;
-    private final int RULES_BUTTON_Y = 400;
+    private final int RULES_BUTTON_Y = 300;
+    private final int SETTING_BUTTON_X = 600;
+    private final int SETTING_BUTTON_Y = 400;
 
     private Menu(){
         gameFrame.setLayout(null);
@@ -28,6 +29,8 @@ public final class Menu {
         JButton startButton = new JButton();
         JButton quitButton = new JButton();
         JButton rulesButton = new JButton();
+        JButton settingButton = new JButton();
+
         ImageIcon startButtonIconInactive = new ImageIcon("assets/Menu/start_inactive.png");
         ImageIcon startButtonIconActive = new ImageIcon("assets/Menu/start_active.png");
 
@@ -37,6 +40,9 @@ public final class Menu {
         ImageIcon rulesButtonIconInactive = new ImageIcon("assets/Menu/rules_inactive.png");
         ImageIcon rulesButtonIconActive = new ImageIcon("assets/Menu/rules_active.png");
 
+        ImageIcon settingButtonIconInactive = new ImageIcon("assets/Menu/setting_inactive.png");
+        ImageIcon settingButtonIconActive = new ImageIcon("assets/Menu/setting_active.png");
+
         startButton.setIcon(startButtonIconInactive);
         startButton.setBounds(START_BUTTON_X, START_BUTTON_Y,startButtonIconInactive.getIconWidth(),startButtonIconInactive.getIconHeight());
 
@@ -45,6 +51,9 @@ public final class Menu {
 
         rulesButton.setIcon(rulesButtonIconInactive);
         rulesButton.setBounds(RULES_BUTTON_X, RULES_BUTTON_Y,rulesButtonIconInactive.getIconWidth(),rulesButtonIconInactive.getIconHeight());
+
+        settingButton.setIcon(settingButtonIconInactive);
+        settingButton.setBounds(SETTING_BUTTON_X, SETTING_BUTTON_Y, settingButtonIconInactive.getIconWidth(),settingButtonIconInactive.getIconHeight());
 
 
         startButton.addMouseListener(new MouseAdapter() {
@@ -95,15 +104,38 @@ public final class Menu {
             }
         });
 
+        settingButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                settingButton.setIcon(settingButtonIconActive);
+                settingButton.setBounds(SETTING_BUTTON_X, SETTING_BUTTON_Y, settingButtonIconInactive.getIconWidth(),settingButtonIconInactive.getIconHeight());
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                settingButton.setIcon(settingButtonIconInactive);
+                settingButton.setBounds(SETTING_BUTTON_X, SETTING_BUTTON_Y, settingButtonIconInactive.getIconWidth(),settingButtonIconInactive.getIconHeight());
+            }
+        });
+
         startButton.addActionListener(new StartButtonListener());
 
         quitButton.addActionListener(e -> System.exit(0));
 
+        rulesButton.addActionListener(e -> {
+            Rules.getInstance();
+            instance.setGameFrameVisible(false);
+        });
 
-
+        settingButton.addActionListener(e->{
+            Setting.getInstance();
+            instance.setGameFrameVisible(false);
+        });
         gameFrame.add(startButton);
         gameFrame.add(quitButton);
         gameFrame.add(rulesButton);
+        gameFrame.add(settingButton);
+
         gameFrame.setSize(FRAME_WIDTH,FRAME_HEIGHT);
 
         Container c = gameFrame.getContentPane();
