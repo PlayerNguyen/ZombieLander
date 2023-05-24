@@ -41,6 +41,10 @@ task dist(type: Jar) {
     with jar
 }
 
+dependencies {
+    implementation 'net.jakubec:image-panel:0.2.1'
+}
+
 
 dist.dependsOn classes
 
