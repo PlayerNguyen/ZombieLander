@@ -30,7 +30,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.mygdx.zombieland.World;
+import com.mygdx.zombieland.effects.TextIndicator;
 import com.mygdx.zombieland.entity.Damageable;
 import com.mygdx.zombieland.entity.Entity;
 import com.mygdx.zombieland.entity.Player;
@@ -46,7 +48,7 @@ public class Zombie extends EnemyAbstract {
 
     public static final int ZOMBIE_SIZE = 64;
     //  public static final float ZOMBIE_MOVEMENT_SPEED = 30f; // Each type has different speed
-  
+
     public static final long ZOMBIE_HIT_DURATION = 2000;
 
     private final World world;
@@ -58,6 +60,7 @@ public class Zombie extends EnemyAbstract {
     private float speed; // Zombie movement speed
 
     private long lastHit = 0;
+    private TextIndicator.TextItem currentTextItem = null;
 
     public Zombie(World world, Location startLocation, Entity target, ZombieType type) {
         super(startLocation, new Vector2D(), null, null, type.getHealth());
@@ -89,6 +92,7 @@ public class Zombie extends EnemyAbstract {
         this.getSprite().setSize(ZOMBIE_SIZE, ZOMBIE_SIZE);
         this.getSprite().setOrigin((float) ZOMBIE_SIZE / 2, (float) ZOMBIE_SIZE / 2);
 
+        this.rotateToTarget();
         this.updateMove();
     }
 
@@ -120,8 +124,9 @@ public class Zombie extends EnemyAbstract {
 //         }
 
 
-// >>>>>>> feat/zombie-move
-   private int reactionRate=0;
+    // >>>>>>> feat/zombie-move
+    private int reactionRate = 0;
+
     @Override
     public void render() {
         if (this.world.getGameState().equals(GameState.PLAYING)) {
@@ -132,65 +137,16 @@ public class Zombie extends EnemyAbstract {
         this.getSprite().setRotation(this.getRotation());
         this.getSprite().setPosition(this.getLocation().x - 32, this.getLocation().y - 32);
         this.getSprite().draw(world.getBatch());
-        
-         // Debug
+
+        // Debug
         if (this.getWorld().isDebug()) {
             VisualizeHelper.simulateBox(this.getWorld(), this);
             VisualizeHelper.simulateDirection(this.getWorld(), this);
         }
-// <<<<<<< master
-//     }
 
-//     private void rotateToTarget() {
-//         // arc tan(y / x)
-//         Location temp = this.target.getLocation();
-//         Location cur = this.getLocation();
-
-//         float atan2 = (float) Math.atan2(temp.y - cur.y, temp.x - cur.x);
-//         this.setRotation((float) Math.toDegrees(atan2));
-// =======
-//         boolean ok= true;
-//         for (Entity entity : this.world.getEntities()) {
-//             if (entity instanceof Fence) {
-//                 Rectangle rectangle = new Rectangle(this.getCenterLocation(), ZOMBIE_SIZE, ZOMBIE_SIZE);
-//                 if (!rectangle.isCollided(new Rectangle(entity.getCenterLocation(), entity.getSize(), entity.getSize()))) {
-//                     // pass
-//                 }
-//                 else{
-//                     System.out.println("colision");
-//                     ok= false;
-//                     break;
-//                 }
-//             }
-//         }
-//         if(ok == true && reactionRate==0)
-//         {
-//             this.translate((float) this.getDirection().x, (float) this.getDirection().y);
-//             rotateToTarget();
-//         }
-//         else{
-//             this.translate(0, 1);
-//             reactionRate++;
-//             reactionRate%=Gdx.graphics.getDeltaTime() + 20;
-//         }
-//     }
-
-
-//     public void translate(float x, float y) {
-//         this.getLocation().add(x, y);
-//     }
-
-
-//     private void rotateToTarget() {
-//         Location cur = this.getLocation();
-//         Location temp = new Location(this.target.getLocation().x, this.target.getLocation().y);
-//         float atan2 = (float) Math.atan2(temp.y - cur.y, temp.x - cur.x);
-//         this.setRotation((float) Math.toDegrees(atan2));
-
-// >>>>>>> feat/zombie-move
-       boolean ok= true;
+        boolean ok = true;
         for (Entity entity : this.world.getEntities()) {
-            if (!(entity instanceof Fence) && !(entity instanceof Player) ) {
+            if (!(entity instanceof Fence) && !(entity instanceof Player)) {
                 continue;
             }
 
@@ -201,18 +157,17 @@ public class Zombie extends EnemyAbstract {
             }
 
             System.out.println("colision");
-            ok= false;
+            ok = false;
             break;
         }
-        if(ok && reactionRate==0)
-        {
-            this.translate((float) this.getDirection().x, (float) this.getDirection().y);
+        if (ok && reactionRate == 0) {
+            this.translate((float) this.getDirection().x * speed * Gdx.graphics.getDeltaTime(),
+                    (float) this.getDirection().y * speed * Gdx.graphics.getDeltaTime());
             rotateToTarget();
-        }
-        else{
+        } else {
             this.translate(0, 1);
             reactionRate++;
-            reactionRate%=Gdx.graphics.getDeltaTime() + 20;
+            reactionRate %= Gdx.graphics.getDeltaTime() + 20;
         }
     }
 
@@ -221,12 +176,15 @@ public class Zombie extends EnemyAbstract {
         this.getLocation().add(x, y);
     }
 
-
     private void rotateToTarget() {
         Location cur = this.getLocation();
-        Location temp = new Location(this.target.getLocation().x, this.target.getLocation().y);
+        Location targetLocation = this.target.getLocation();
+        Location temp = new Location(targetLocation.x, targetLocation.y);
+
         float atan2 = (float) Math.atan2(temp.y - cur.y, temp.x - cur.x);
-        this.setRotation((float) Math.toDegrees(atan2));
+        float atan2AsDegree = atan2 * MathUtils.radiansToDegrees;
+
+        this.setRotation(atan2AsDegree);
     }
 
     @Override
@@ -245,14 +203,12 @@ public class Zombie extends EnemyAbstract {
     }
 
     private void updateMove() {
+        // Set direction to the target
+        this.getDirection().x = Math.cos(Math.toRadians(this.getRotation()));
+        this.getDirection().y = Math.sin(Math.toRadians(this.getRotation()));
+
         // Update rotation to target
         this.rotateToTarget();
-
-
-        // Set direction to the target
-        this.getDirection().x = Math.sin(this.getRotation());
-        this.getDirection().y = -Math.cos(this.getRotation());
-
 
         // Update speed
         this.setSpeed(this.getType().getSpeed());
