@@ -15,8 +15,6 @@ import com.badlogic.gdx.utils.Align;
 import com.mygdx.zombieland.effects.TextIndicator;
 import com.mygdx.zombieland.entity.Entity;
 import com.mygdx.zombieland.entity.Player;
-import com.mygdx.zombieland.entity.enemy.Zombie;
-import com.mygdx.zombieland.entity.enemy.ZombieType;
 import com.mygdx.zombieland.entity.projectile.Projectile;
 import com.mygdx.zombieland.hud.HUD;
 import com.mygdx.zombieland.inventory.Inventory;
@@ -65,7 +63,7 @@ public class World implements Renderable {
 
 
     public World(SpriteBatch batch) {
-        this.gameSetting = new GameSetting();
+        this.gameSetting = GameSetting.getInstance();
         this.batch = batch;
         this.scheduler = new Scheduler();
 
