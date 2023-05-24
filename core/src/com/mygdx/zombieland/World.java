@@ -45,7 +45,13 @@ public class World implements Renderable {
     private static final Texture LOGO_TEXTURE = new Texture(Gdx.files.internal("logo.png"));
     private static final Music BGM_SOUND = Gdx.audio.newMusic(Gdx.files.internal("audio/BGM.mp3"));
 
+    private static boolean isMoveUp = false;
 
+    private static boolean isMoveDown = false;
+
+    private static boolean isMoveLeft = false;
+
+    private static boolean isMoveRight = false;
 
 
     public SpriteBatch batch;
@@ -255,7 +261,10 @@ public class World implements Renderable {
                 if (this.getGameState() == PLAYING && !BGM_SOUND.isPlaying()) {
                     BGM_SOUND.play();
                 }
-
+                if(isMoveUp) player.moveUp();
+                if(isMoveDown) player.moveDown();
+                if(isMoveLeft) player.moveLeft();
+                if(isMoveRight) player.moveRight();
                 // Esc to pause
                 Gdx.input.setInputProcessor(new InputProcessor() {
                     @Override
@@ -272,6 +281,27 @@ public class World implements Renderable {
                             return true;
                         }
 
+                        if(keycode == Input.Keys.W){
+
+                                isMoveUp = true;
+
+                        }
+                        if(keycode == Input.Keys.S){
+
+                                isMoveDown = true;
+
+                        }
+                        if(keycode == Input.Keys.A){
+
+                                isMoveLeft = true;
+
+                        }
+
+                        if(keycode == Input.Keys.D){
+
+                                isMoveRight = true;
+
+                        }
 
 
 
@@ -291,7 +321,18 @@ public class World implements Renderable {
 
                     @Override
                     public boolean keyUp(int keycode) {
-
+                        if(keycode == Input.Keys.W){
+                            isMoveUp = false;
+                        }
+                        if(keycode == Input.Keys.S){
+                            isMoveDown = false;
+                        }
+                        if(keycode == Input.Keys.A){
+                            isMoveLeft = false;
+                        }
+                        if(keycode == Input.Keys.D){
+                            isMoveRight = false;
+                        }
 
                         return false;
                     }
