@@ -122,12 +122,12 @@ public class World implements Renderable {
         // Load spawners
         // Zombie spawner
         this.spawners.clear();
-        this.spawners.add(new ZombieSpawner(this,
-                new Location(15, 300), 80f, 5000));
-        this.spawners.add(new ZombieSpawner(this,
-                new Location(15, 300), 80f, 5000));
-        this.spawners.add(new ZombieSpawner(this,
-                new Location(15, 300), 80f, 5000));
+//        this.spawners.add(new ZombieSpawner(this,
+//                new Location(15, 300), 80f, 5000));
+//        this.spawners.add(new ZombieSpawner(this,
+//                new Location(15, 300), 80f, 5000));
+//        this.spawners.add(new ZombieSpawner(this,
+//                new Location(15, 300), 80f, 5000));
         this.spawners.add(new ZombieSpawner(this,
                 new Location(15, 300), 80f, 5000));
         // Box spawner

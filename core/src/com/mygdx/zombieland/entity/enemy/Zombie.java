@@ -65,11 +65,14 @@ public class Zombie extends EnemyAbstract {
         this.updateMove();
     }
 
+    int cnt=0;
     @Override
     public void render() {
         if (this.world.getGameState().equals(GameState.PLAYING)) {
             this.updateMove();
         }
+
+
 
         // Export (render) image
         this.getSprite().setRotation(this.getRotation());
@@ -81,17 +84,29 @@ public class Zombie extends EnemyAbstract {
             VisualizeHelper.simulateBox(this.getWorld(), this);
             VisualizeHelper.simulateDirection(this.getWorld(), this);
         }
+        boolean ok= true;
         for (Entity entity : this.world.getEntities()) {
             if (entity instanceof Fence) {
                 Rectangle rectangle = new Rectangle(this.getCenterLocation(), ZOMBIE_SIZE, ZOMBIE_SIZE);
                 if (!rectangle.isCollided(new Rectangle(entity.getCenterLocation(), entity.getSize(), entity.getSize()))) {
-                    rotateToTarget();
-                    this.translate((float) this.getDirection().x, (float) this.getDirection().y);
+                    // pass
                 }
                 else{
-                    this.stay();
+                    System.out.println("colision");
+                    ok= false;
+                    break;
                 }
             }
+        }
+        if(ok == true && cnt==0)
+        {
+            this.translate((float) this.getDirection().x, (float) this.getDirection().y);
+            rotateToTarget();
+        }
+        else{
+            this.translate(0, 1);
+            cnt++;
+            cnt%=Gdx.graphics.getDeltaTime() + 20;
         }
     }
 
@@ -100,11 +115,6 @@ public class Zombie extends EnemyAbstract {
         this.getLocation().add(x, y);
     }
 
-
-    private void stay(){
-        this.setSpeed(0F);
-        this.getDirection().set(0,0);
-    }
 
     private void rotateToTarget() {
         Location cur = this.getLocation();
