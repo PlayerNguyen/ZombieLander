@@ -65,7 +65,7 @@ public class Zombie extends EnemyAbstract {
         this.updateMove();
     }
 
-    int cnt=0;
+    private int reactionRate=0;
     @Override
     public void render() {
         if (this.world.getGameState().equals(GameState.PLAYING)) {
@@ -98,15 +98,15 @@ public class Zombie extends EnemyAbstract {
                 }
             }
         }
-        if(ok == true && cnt==0)
+        if(ok == true && reactionRate==0)
         {
             this.translate((float) this.getDirection().x, (float) this.getDirection().y);
             rotateToTarget();
         }
         else{
             this.translate(0, 1);
-            cnt++;
-            cnt%=Gdx.graphics.getDeltaTime() + 20;
+            reactionRate++;
+            reactionRate%=Gdx.graphics.getDeltaTime() + 20;
         }
     }
 
