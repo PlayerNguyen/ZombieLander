@@ -15,10 +15,12 @@ import com.badlogic.gdx.utils.Align;
 import com.mygdx.zombieland.effects.TextIndicator;
 import com.mygdx.zombieland.entity.Entity;
 import com.mygdx.zombieland.entity.Player;
+import com.mygdx.zombieland.entity.projectile.Projectile;
 import com.mygdx.zombieland.entity.enemy.Zombie;
 import com.mygdx.zombieland.entity.enemy.ZombieType;
 import com.mygdx.zombieland.entity.projectile.Projectile;
 import com.mygdx.zombieland.entity.undestructable.Fence;
+
 import com.mygdx.zombieland.hud.HUD;
 import com.mygdx.zombieland.inventory.Inventory;
 import com.mygdx.zombieland.inventory.InventoryPistol;
@@ -33,9 +35,6 @@ import com.mygdx.zombieland.spawner.Spawner;
 import com.mygdx.zombieland.spawner.ZombieSpawner;
 import com.mygdx.zombieland.state.GameState;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -48,7 +47,13 @@ public class World implements Renderable {
     private static final int WINDOW_HEIGHT = 600;
     private static final Texture BACKGROUND_TEXTURE = new Texture(Gdx.files.internal("background.png"));
     private static final Texture LOGO_TEXTURE = new Texture(Gdx.files.internal("logo.png"));
-    private static final Music BGM_SOUND = Gdx.audio.newMusic(Gdx.files.internal("audio/BGM.mp3"));
+  //    private static final Music BGM_SOUND = Gdx.audio.newMusic(Gdx.files.internal("audio/BGM.mp3"));
+
+    private static boolean isMoveUp = false;
+
+    private static boolean isMoveDown = false;
+    private static boolean isMoveLeft = false;
+    private static boolean isMoveRight = false;
 
     public SpriteBatch batch;
     public BitmapFont font;
@@ -67,8 +72,6 @@ public class World implements Renderable {
     private final Scheduler scheduler;
     private final TextIndicator textIndicator;
     private final HUD hud;
-
-
 
     public World(SpriteBatch batch) {
         this.gameSetting = new GameSetting();
@@ -99,16 +102,9 @@ public class World implements Renderable {
         // Load player and inject world into player
         this.player = new Player(this);
         this.player.create();
-
-        // Add entities
-//        this.entities.add(new Fence(this, new Location(50, 100)));
-//        this.entities.add(new Fence(this, new Location(50, 200)));
+      
         this.entities.add(new Fence(this, new Location(200, 255)));
-//        this.entities.add(new Fence(this, new Location(50, 400)));
-//        this.entities.add(new Fence(this, new Location(50, 500)));
-
-
-
+      
         // Load entities
         for (Entity entity : entities) {
             entity.create();
@@ -122,7 +118,7 @@ public class World implements Renderable {
         // Load spawners
         // Zombie spawner
         this.spawners.clear();
-//        this.spawners.add(new ZombieSpawner(this,
+        //        this.spawners.add(new ZombieSpawner(this,
 //                new Location(15, 300), 80f, 5000));
 //        this.spawners.add(new ZombieSpawner(this,
 //                new Location(15, 300), 80f, 5000));
@@ -130,6 +126,7 @@ public class World implements Renderable {
 //                new Location(15, 300), 80f, 5000));
         this.spawners.add(new ZombieSpawner(this,
                 new Location(15, 300), 80f, 5000));
+      
         // Box spawner
         this.spawners.add(new BoxSpawner(this, new Location(this.getPlayer().getLocation()),
                 120f, 12000));
@@ -139,10 +136,9 @@ public class World implements Renderable {
 
         // HUD initialization
         this.hud.create();
-
-        BGM_SOUND.setLooping(true);
-        BGM_SOUND.setVolume(this.getGameSetting().getMusicSoundLevel());
-        BGM_SOUND.play();
+//        BGM_SOUND.setLooping(true);
+//        BGM_SOUND.setVolume(this.getGameSetting().getMusicSoundLevel());
+//        BGM_SOUND.play();
     }
 
     @Override
@@ -153,9 +149,7 @@ public class World implements Renderable {
         this.batch.setProjectionMatrix(this.camera.combined);
         this.camera.position.x = (float) 800 / 2;
         this.camera.position.y = (float) 600 / 2;
-
-
-
+      
         // Update background
         this.updateBackground();
 
@@ -262,6 +256,12 @@ public class World implements Renderable {
 
                 this.hud.render();
 
+                // Key movement register
+                if(isMoveUp) player.moveUp();
+                if(isMoveDown) player.moveDown();
+                if(isMoveLeft) player.moveLeft();
+                if(isMoveRight) player.moveRight();
+              
                 // Music pause
                 if (this.getGameState() == PAUSING && BGM_SOUND.isPlaying()) {
                     BGM_SOUND.pause();
@@ -270,7 +270,7 @@ public class World implements Renderable {
                 if (this.getGameState() == PLAYING && !BGM_SOUND.isPlaying()) {
                     BGM_SOUND.play();
                 }
-
+              
                 // Esc to pause
                 Gdx.input.setInputProcessor(new InputProcessor() {
                     @Override
@@ -286,6 +286,30 @@ public class World implements Renderable {
                             }
                             return true;
                         }
+
+
+                if(keycode == Input.Keys.W){
+
+                                isMoveUp = true;
+
+                        }
+                        if(keycode == Input.Keys.S){
+
+                                isMoveDown = true;
+
+                        }
+                        if(keycode == Input.Keys.A){
+
+                                isMoveLeft = true;
+
+                        }
+
+                        if(keycode == Input.Keys.D){
+
+                                isMoveRight = true;
+
+                        }
+
 
                         // Debug shortcut
                         if (keycode == Input.Keys.F3) {
@@ -303,6 +327,18 @@ public class World implements Renderable {
 
                     @Override
                     public boolean keyUp(int keycode) {
+                        if(keycode == Input.Keys.W){
+                            isMoveUp = false;
+                        }
+                        if(keycode == Input.Keys.S){
+                            isMoveDown = false;
+                        }
+                        if(keycode == Input.Keys.A){
+                            isMoveLeft = false;
+                        }
+                        if(keycode == Input.Keys.D){
+                            isMoveRight = false;
+                        }
                         return false;
                     }
 
@@ -346,7 +382,6 @@ public class World implements Renderable {
 
                 break;
             }
-
             default: {
                 throw new UnsupportedOperationException();
             }

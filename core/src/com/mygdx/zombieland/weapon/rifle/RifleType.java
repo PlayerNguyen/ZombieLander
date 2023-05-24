@@ -5,6 +5,7 @@ import com.badlogic.gdx.audio.Sound;
 
 public enum RifleType {
     RIFLE(
+
             20F,
                     100F,
                     30,

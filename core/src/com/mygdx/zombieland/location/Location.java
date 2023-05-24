@@ -94,10 +94,6 @@ public class Location {
         return this;
     }
 
-//    public createRect() {
-//
-//    }
-
     @Override
     public String toString() {
         return "Location{" +
