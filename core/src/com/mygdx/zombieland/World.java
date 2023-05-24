@@ -3,6 +3,7 @@ package com.mygdx.zombieland;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,12 +16,18 @@ import com.mygdx.zombieland.effects.TextIndicator;
 import com.mygdx.zombieland.entity.Entity;
 import com.mygdx.zombieland.entity.Player;
 import com.mygdx.zombieland.entity.projectile.Projectile;
+import com.mygdx.zombieland.entity.enemy.Zombie;
+import com.mygdx.zombieland.entity.enemy.ZombieType;
+import com.mygdx.zombieland.entity.projectile.Projectile;
+import com.mygdx.zombieland.entity.undestructable.Fence;
+
 import com.mygdx.zombieland.hud.HUD;
 import com.mygdx.zombieland.inventory.Inventory;
 import com.mygdx.zombieland.inventory.InventoryPistol;
 import com.mygdx.zombieland.inventory.InventoryRifle;
 import com.mygdx.zombieland.location.Location;
 import com.mygdx.zombieland.location.Vector2D;
+import com.mygdx.zombieland.map.Map;
 import com.mygdx.zombieland.scheduler.Scheduler;
 import com.mygdx.zombieland.setting.GameSetting;
 import com.mygdx.zombieland.spawner.BoxSpawner;
@@ -40,16 +47,13 @@ public class World implements Renderable {
     private static final int WINDOW_HEIGHT = 600;
     private static final Texture BACKGROUND_TEXTURE = new Texture(Gdx.files.internal("background.png"));
     private static final Texture LOGO_TEXTURE = new Texture(Gdx.files.internal("logo.png"));
-//    private static final Music BGM_SOUND = Gdx.audio.newMusic(Gdx.files.internal("audio/BGM.mp3"));
+  //    private static final Music BGM_SOUND = Gdx.audio.newMusic(Gdx.files.internal("audio/BGM.mp3"));
 
     private static boolean isMoveUp = false;
 
     private static boolean isMoveDown = false;
-
     private static boolean isMoveLeft = false;
-
     private static boolean isMoveRight = false;
-
 
     public SpriteBatch batch;
     public BitmapFont font;
@@ -69,7 +73,6 @@ public class World implements Renderable {
     private final TextIndicator textIndicator;
     private final HUD hud;
 
-
     public World(SpriteBatch batch) {
         this.gameSetting = new GameSetting();
         this.batch = batch;
@@ -86,6 +89,7 @@ public class World implements Renderable {
         this.inventory = new Inventory(this);
     }
 
+
     @Override
     public void create() {
         // Load assets and materials
@@ -98,7 +102,9 @@ public class World implements Renderable {
         // Load player and inject world into player
         this.player = new Player(this);
         this.player.create();
-
+      
+        this.entities.add(new Fence(this, new Location(200, 255)));
+      
         // Load entities
         for (Entity entity : entities) {
             entity.create();
@@ -112,14 +118,15 @@ public class World implements Renderable {
         // Load spawners
         // Zombie spawner
         this.spawners.clear();
+        //        this.spawners.add(new ZombieSpawner(this,
+//                new Location(15, 300), 80f, 5000));
+//        this.spawners.add(new ZombieSpawner(this,
+//                new Location(15, 300), 80f, 5000));
+//        this.spawners.add(new ZombieSpawner(this,
+//                new Location(15, 300), 80f, 5000));
         this.spawners.add(new ZombieSpawner(this,
-                new Location(15, 300), 50f, 5000));
-        this.spawners.add(new ZombieSpawner(this,
-                new Location(15, 300), 50f, 5000));
-        this.spawners.add(new ZombieSpawner(this,
-                new Location(15, 300), 50f, 5000));
-        this.spawners.add(new ZombieSpawner(this,
-                new Location(15, 300), 50f, 5000));
+                new Location(15, 300), 80f, 5000));
+      
         // Box spawner
         this.spawners.add(new BoxSpawner(this, new Location(this.getPlayer().getLocation()),
                 120f, 12000));
@@ -129,7 +136,6 @@ public class World implements Renderable {
 
         // HUD initialization
         this.hud.create();
-
 //        BGM_SOUND.setLooping(true);
 //        BGM_SOUND.setVolume(this.getGameSetting().getMusicSoundLevel());
 //        BGM_SOUND.play();
@@ -143,7 +149,7 @@ public class World implements Renderable {
         this.batch.setProjectionMatrix(this.camera.combined);
         this.camera.position.x = (float) 800 / 2;
         this.camera.position.y = (float) 600 / 2;
-
+      
         // Update background
         this.updateBackground();
 
@@ -250,11 +256,20 @@ public class World implements Renderable {
 
                 this.hud.render();
 
-                // Music pause
+                // Key movement register
                 if(isMoveUp) player.moveUp();
                 if(isMoveDown) player.moveDown();
                 if(isMoveLeft) player.moveLeft();
                 if(isMoveRight) player.moveRight();
+              
+                // Music pause
+                if (this.getGameState() == PAUSING && BGM_SOUND.isPlaying()) {
+                    BGM_SOUND.pause();
+                }
+
+                if (this.getGameState() == PLAYING && !BGM_SOUND.isPlaying()) {
+                    BGM_SOUND.play();
+                }
               
                 // Esc to pause
                 Gdx.input.setInputProcessor(new InputProcessor() {
@@ -272,7 +287,8 @@ public class World implements Renderable {
                             return true;
                         }
 
-                        if(keycode == Input.Keys.W){
+
+                if(keycode == Input.Keys.W){
 
                                 isMoveUp = true;
 
@@ -293,7 +309,6 @@ public class World implements Renderable {
                                 isMoveRight = true;
 
                         }
-
 
 
                         // Debug shortcut
@@ -324,7 +339,6 @@ public class World implements Renderable {
                         if(keycode == Input.Keys.D){
                             isMoveRight = false;
                         }
-
                         return false;
                     }
 
@@ -368,7 +382,6 @@ public class World implements Renderable {
 
                 break;
             }
-
             default: {
                 throw new UnsupportedOperationException();
             }

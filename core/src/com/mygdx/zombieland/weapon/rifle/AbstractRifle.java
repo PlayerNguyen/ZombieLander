@@ -1,5 +1,5 @@
 package com.mygdx.zombieland.weapon.rifle;
-
+import com.badlogic.gdx.audio.Sound;
 import com.mygdx.zombieland.weapon.AbstractGun;
 
 public abstract class AbstractRifle extends AbstractGun {

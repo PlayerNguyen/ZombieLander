@@ -52,7 +52,6 @@ public abstract class Box extends ItemAbstract {
 
         if (this.getWorld().isDebug()) {
             VisualizeHelper.simulateBox(this.getWorld(), this);
-
         }
 
     }

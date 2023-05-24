@@ -5,8 +5,9 @@ import com.badlogic.gdx.audio.Sound;
 
 public enum RifleType {
     RIFLE(
-            30F,
-                    6F,
+
+            20F,
+                    100F,
                     30,
                     0.0F,
             Gdx.audio.newSound(Gdx.files.internal("audio/weapon/pistol_1.wav")),
