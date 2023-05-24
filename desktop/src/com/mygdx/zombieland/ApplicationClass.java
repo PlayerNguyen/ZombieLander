@@ -1,67 +1,41 @@
 package com.mygdx.zombieland;
 
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
 
-class ApplicationClass {
-    private static final int frameWidth = 800;
-    private static final int frameHeight = 600;
+public final class ApplicationClass {
+    private static ApplicationClass instance;
+    private static final int FRAME_WIDTH = 800;
+    private static final int FRAME_HEIGHT = 600;
+    private final Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+    private final ZombieLandMain zombieLandMain = new ZombieLandMain();
 
-    void startApplication() {
-        Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-        ZombieLandMain zombieLandMain = new ZombieLandMain();
+    private ApplicationClass(){
         config.useVsync(true);
         config.setResizable(false);
         config.setForegroundFPS(60);
         config.setTitle(String.format("ZombieLand [ %s ]", ZombieLandMain.gameVersion));
-        config.setWindowedMode(frameWidth, frameHeight);
+        config.setWindowedMode(FRAME_WIDTH, FRAME_HEIGHT);
+        config.setInitialVisible(true);
 
-        config.setWindowListener(new Lwjgl3WindowListener() {
-            @Override
-            public void created(Lwjgl3Window window) {
 
-            }
+    }
 
-            @Override
-            public void iconified(boolean isIconified) {
+    public static ApplicationClass getInstance(){
+        if(instance == null){
+            instance = new ApplicationClass();
+        }
+        return instance;
+    }
 
-            }
+    public void startApplication() {
+        new Lwjgl3Application(zombieLandMain, config);
 
-            @Override
-            public void maximized(boolean isMaximized) {
+    }
 
-            }
-
-            @Override
-            public void focusLost() {
-
-            }
-
-            @Override
-            public void focusGained() {
-
-            }
-
-            @Override
-            public boolean closeRequested() {
-                FrameClass frame = new FrameClass();
-                frame.createFrame();
-                return true;
-            }
-
-            @Override
-            public void filesDropped(String[] files) {
-
-            }
-
-            @Override
-            public void refreshRequested() {
-
-            }
-        });
-
-       new Lwjgl3Application(zombieLandMain, config);
+    public void setGameVisible(boolean state){
+        config.setInitialVisible(state);
     }
 }
