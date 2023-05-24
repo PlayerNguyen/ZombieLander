@@ -263,13 +263,13 @@ public class World implements Renderable {
                 if(isMoveRight) player.moveRight();
               
                 // Music pause
-                if (this.getGameState() == PAUSING && BGM_SOUND.isPlaying()) {
-                    BGM_SOUND.pause();
-                }
-
-                if (this.getGameState() == PLAYING && !BGM_SOUND.isPlaying()) {
-                    BGM_SOUND.play();
-                }
+//                if (this.getGameState() == PAUSING && BGM_SOUND.isPlaying()) {
+//                    BGM_SOUND.pause();
+//                }
+//
+//                if (this.getGameState() == PLAYING && !BGM_SOUND.isPlaying()) {
+//                    BGM_SOUND.play();
+//                }
               
                 // Esc to pause
                 Gdx.input.setInputProcessor(new InputProcessor() {
