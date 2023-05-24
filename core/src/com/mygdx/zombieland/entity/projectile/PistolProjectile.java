@@ -37,7 +37,7 @@ public class PistolProjectile extends AbstractProjectile {
         Gdx.app.log("Projectile", "Generated projectile @" + System.identityHashCode(this));
 
         // Project a straight-forward ray from player location to estimate triggered entity
-        Set<Entity> damageEntities = RayHelper.projectCollectionRay(this, 16);
+        Set<Entity> damageEntities = RayHelper.projectCollectionRay(this, 16, this.getWorld());
 
         // Damage entities from the list above
         this.getWorld().getScheduler().runTaskAfter(new DamageEntityOnShootRunnable(this,
@@ -62,8 +62,8 @@ public class PistolProjectile extends AbstractProjectile {
         this.getSprite().setPosition(this.getLocation().x, this.getLocation().y);
         this.getSprite().setRotation(this.getRotation());
         // Update bullet location from direction
-        this.getLocation().x = (float) (this.getLocation().x + (this.getDirection().x * 120));
-        this.getLocation().y = (float) (this.getLocation().y + (this.getDirection().y * 120));
+        this.getLocation().x = (float) (this.getLocation().x + (this.getDirection().x * Gdx.graphics.getDeltaTime() * 2000));
+        this.getLocation().y = (float) (this.getLocation().y + (this.getDirection().y * Gdx.graphics.getDeltaTime() * 2000));
 
         // Draw the texture when it's far away from the player
         if (this.getLocation().distance(this.getProjectileSource().getLocation()) >=
@@ -81,7 +81,6 @@ public class PistolProjectile extends AbstractProjectile {
 
             // Hit the entity
             if (entityLocation.distance(this.getLocation()) <= (float) entity.getSize() / 2F) {
-
                 Gdx.app.log("Triggered", "Hit to entity ...");
                 // Set triggered
                 setHit(true);

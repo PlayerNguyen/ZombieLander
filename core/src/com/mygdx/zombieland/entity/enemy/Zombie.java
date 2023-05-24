@@ -44,6 +44,10 @@ import com.mygdx.zombieland.state.GameState;
 import com.mygdx.zombieland.utils.Rectangle;
 import com.mygdx.zombieland.utils.VisualizeHelper;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 public class Zombie extends EnemyAbstract {
 
     public static final int ZOMBIE_SIZE = 64;
@@ -61,6 +65,8 @@ public class Zombie extends EnemyAbstract {
 
     private long lastHit = 0;
     private TextIndicator.TextItem currentTextItem = null;
+
+    private Set<Entity> lastMovedBlock;
 
     public Zombie(World world, Location startLocation, Entity target, ZombieType type) {
         super(startLocation, new Vector2D(), null, null, type.getHealth());
@@ -129,6 +135,23 @@ public class Zombie extends EnemyAbstract {
 
     @Override
     public void render() {
+
+        // Put the zombie onto the map
+        if (this.lastMovedBlock != null) {
+            this.lastMovedBlock.remove(this);
+            System.out.println(this.lastMovedBlock);
+        }
+
+        if (this.getLocation().x > 0 && this.getLocation().y > 0) {
+            HashSet<Entity> currentBlock = this.getWorld()
+                    .getEntitiesMap()
+                    .get((int) this.getLocation().x, (int) this.getLocation().y);
+            currentBlock.add(this);
+            this.lastMovedBlock = currentBlock;
+            System.out.println(this.lastMovedBlock);
+        }
+
+
         if (this.world.getGameState().equals(GameState.PLAYING)) {
             this.updateMove();
         }
@@ -254,5 +277,12 @@ public class Zombie extends EnemyAbstract {
 
     public float getSpeed() {
         return speed;
+    }
+
+    @Override
+    public void kill() {
+        super.kill();
+
+        this.lastMovedBlock.remove(this);
     }
 }

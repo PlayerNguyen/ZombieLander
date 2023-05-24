@@ -34,7 +34,10 @@ import com.mygdx.zombieland.spawner.BoxSpawner;
 import com.mygdx.zombieland.spawner.Spawner;
 import com.mygdx.zombieland.spawner.ZombieSpawner;
 import com.mygdx.zombieland.state.GameState;
+import com.mygdx.zombieland.utils.VisualizeHelper;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -47,7 +50,7 @@ public class World implements Renderable {
     private static final int WINDOW_HEIGHT = 600;
     private static final Texture BACKGROUND_TEXTURE = new Texture(Gdx.files.internal("background.png"));
     private static final Texture LOGO_TEXTURE = new Texture(Gdx.files.internal("logo.png"));
-  //    private static final Music BGM_SOUND = Gdx.audio.newMusic(Gdx.files.internal("audio/BGM.mp3"));
+    //    private static final Music BGM_SOUND = Gdx.audio.newMusic(Gdx.files.internal("audio/BGM.mp3"));
 
     private static boolean isMoveUp = false;
 
@@ -72,6 +75,7 @@ public class World implements Renderable {
     private final Scheduler scheduler;
     private final TextIndicator textIndicator;
     private final HUD hud;
+    private final MapRenderer<HashSet<Entity>> entitiesMap;
 
     public World(SpriteBatch batch) {
         this.gameSetting = new GameSetting();
@@ -87,6 +91,7 @@ public class World implements Renderable {
         this.hud = new HUD(this);
         this.debug = false;
         this.inventory = new Inventory(this);
+        this.entitiesMap = new MapRenderer<>(WINDOW_WIDTH, WINDOW_HEIGHT, new HashSet<Entity>());
     }
 
 
@@ -102,9 +107,9 @@ public class World implements Renderable {
         // Load player and inject world into player
         this.player = new Player(this);
         this.player.create();
-      
+
         this.entities.add(new Fence(this, new Location(200, 255)));
-      
+
         // Load entities
         for (Entity entity : entities) {
             entity.create();
@@ -126,7 +131,7 @@ public class World implements Renderable {
 //                new Location(15, 300), 80f, 5000));
         this.spawners.add(new ZombieSpawner(this,
                 new Location(15, 300), 80f, 5000));
-      
+
         // Box spawner
         this.spawners.add(new BoxSpawner(this, new Location(this.getPlayer().getLocation()),
                 120f, 12000));
@@ -136,6 +141,7 @@ public class World implements Renderable {
 
         // HUD initialization
         this.hud.create();
+
 //        BGM_SOUND.setLooping(true);
 //        BGM_SOUND.setVolume(this.getGameSetting().getMusicSoundLevel());
 //        BGM_SOUND.play();
@@ -149,7 +155,7 @@ public class World implements Renderable {
         this.batch.setProjectionMatrix(this.camera.combined);
         this.camera.position.x = (float) 800 / 2;
         this.camera.position.y = (float) 600 / 2;
-      
+
         // Update background
         this.updateBackground();
 
@@ -257,11 +263,11 @@ public class World implements Renderable {
                 this.hud.render();
 
                 // Key movement register
-                if(isMoveUp) player.moveUp();
-                if(isMoveDown) player.moveDown();
-                if(isMoveLeft) player.moveLeft();
-                if(isMoveRight) player.moveRight();
-              
+                if (isMoveUp) player.moveUp();
+                if (isMoveDown) player.moveDown();
+                if (isMoveLeft) player.moveLeft();
+                if (isMoveRight) player.moveRight();
+
                 // Music pause
 //                if (this.getGameState() == PAUSING && BGM_SOUND.isPlaying()) {
 //                    BGM_SOUND.pause();
@@ -270,7 +276,7 @@ public class World implements Renderable {
 //                if (this.getGameState() == PLAYING && !BGM_SOUND.isPlaying()) {
 //                    BGM_SOUND.play();
 //                }
-              
+
                 // Esc to pause
                 Gdx.input.setInputProcessor(new InputProcessor() {
                     @Override
@@ -288,25 +294,25 @@ public class World implements Renderable {
                         }
 
 
-                if(keycode == Input.Keys.W){
+                        if (keycode == Input.Keys.W) {
 
-                                isMoveUp = true;
-
-                        }
-                        if(keycode == Input.Keys.S){
-
-                                isMoveDown = true;
+                            isMoveUp = true;
 
                         }
-                        if(keycode == Input.Keys.A){
+                        if (keycode == Input.Keys.S) {
 
-                                isMoveLeft = true;
+                            isMoveDown = true;
+
+                        }
+                        if (keycode == Input.Keys.A) {
+
+                            isMoveLeft = true;
 
                         }
 
-                        if(keycode == Input.Keys.D){
+                        if (keycode == Input.Keys.D) {
 
-                                isMoveRight = true;
+                            isMoveRight = true;
 
                         }
 
@@ -327,16 +333,16 @@ public class World implements Renderable {
 
                     @Override
                     public boolean keyUp(int keycode) {
-                        if(keycode == Input.Keys.W){
+                        if (keycode == Input.Keys.W) {
                             isMoveUp = false;
                         }
-                        if(keycode == Input.Keys.S){
+                        if (keycode == Input.Keys.S) {
                             isMoveDown = false;
                         }
-                        if(keycode == Input.Keys.A){
+                        if (keycode == Input.Keys.A) {
                             isMoveLeft = false;
                         }
-                        if(keycode == Input.Keys.D){
+                        if (keycode == Input.Keys.D) {
                             isMoveRight = false;
                         }
                         return false;
@@ -386,6 +392,12 @@ public class World implements Renderable {
                 throw new UnsupportedOperationException();
             }
         }
+
+//        for (int i = 0; i < WINDOW_WIDTH; i+= 8) {
+//            for (int j = 0; j < WINDOW_HEIGHT; j+= 8) {
+//                VisualizeHelper.simulateCircle(this, new Location(i, j), 2F);
+//            }
+//        }
     }
 
     @Override
@@ -416,7 +428,7 @@ public class World implements Renderable {
     }
 
     public boolean removeEntity(Entity entity) {
-//        entity.dispose();
+        entity.dispose();
         return this.entities.remove(entity);
     }
 
@@ -516,5 +528,9 @@ public class World implements Renderable {
         this.create();
 
         this.setGameState(PLAYING);
+    }
+
+    public MapRenderer<HashSet<Entity>> getEntitiesMap() {
+        return entitiesMap;
     }
 }

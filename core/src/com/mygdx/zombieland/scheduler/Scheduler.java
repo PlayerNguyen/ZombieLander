@@ -1,5 +1,7 @@
 package com.mygdx.zombieland.scheduler;
 
+import com.badlogic.gdx.Gdx;
+
 public class Scheduler {
 
     public void runTaskAfter(final Runnable runnable, final long afterMillis) {
@@ -8,9 +10,11 @@ public class Scheduler {
             public void run() {
                 long last = System.currentTimeMillis();
                 while (System.currentTimeMillis() < last + afterMillis) {}
-                runnable.run();
+                Gdx.app.postRunnable(runnable);
             }
         }).start();
+
+
     }
 
 }
