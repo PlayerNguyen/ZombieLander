@@ -16,6 +16,7 @@ public class Fence implements Entity {
     private Sprite sprite;
     private final World world;
     private final Location location;
+
     public Fence(World world, Location location) {
         this.world = world;
         this.location = location;
@@ -23,10 +24,10 @@ public class Fence implements Entity {
 
         // mapping the position of the obj to the array
         int x = (int) (location.x);
-        int y= (int) (location.y);
-        for(int i=x; i<x+SPRITE_SIZE; i++) {
-            for(int j=y; j<y+SPRITE_SIZE; j++) {
-                Map.getInstance().setArr(i, j , 1);
+        int y = (int) (location.y);
+        for (int i = x; i < x + SPRITE_SIZE; i++) {
+            for (int j = y; j < y + SPRITE_SIZE; j++) {
+                Map.getInstance().setArr(i, j, 1);
             }
         }
     }
@@ -35,7 +36,7 @@ public class Fence implements Entity {
     public void create() {
         this.sprite = new Sprite(texture);
         this.sprite.setSize(SPRITE_SIZE, SPRITE_SIZE);
-        this.sprite.setOrigin(this.getSize()/2,this.getSize()/2);
+        this.sprite.setOrigin((float) this.getSize() / 2, (float) this.getSize() / 2);
 
 
     }
@@ -48,8 +49,10 @@ public class Fence implements Entity {
         );
         this.getSprite().setPosition(this.getCenterLocation().x, this.getCenterLocation().y);
         sprite.draw(this.world.getBatch());
+
         if (this.getWorld().isDebug()) {
             VisualizeHelper.simulateBox(this.getWorld(), this);
+            VisualizeHelper.simulateBox(this.getWorld(), this.getCenterLocation(), SPRITE_SIZE);
         }
     }
 
@@ -65,7 +68,7 @@ public class Fence implements Entity {
 
     @Override
     public Vector2D getDirection() {
-        return new Vector2D(0,0);
+        return new Vector2D(0, 0);
     }
 
     @Override

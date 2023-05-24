@@ -24,7 +24,9 @@ public class DamageEntityOnShootRunnable implements Runnable {
     public void run() {
         if (!entities.isEmpty()) {
             Entity entity = entities.removeFirst();
-            ((Damageable) entity).damage(this.source, this.amount);
+            if (entity instanceof Damageable) {
+                ((Damageable) entity).damage(this.source, this.amount);
+            }
 //            if (entity instanceof Zombie && ((Zombie)entity).getSpeed() == 0) {
 //                ((Zombie)entity).setSpeed(((Zombie) entity).getType().getSpeed());
 //            }

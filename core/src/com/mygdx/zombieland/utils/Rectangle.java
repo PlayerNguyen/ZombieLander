@@ -1,71 +1,27 @@
 package com.mygdx.zombieland.utils;
 
+import com.mygdx.zombieland.location.Location;
+
 public class Rectangle {
-        int x;
-        int y;
-        int width;
-        int height;
+    private final Location location;
+    int width;
+    int height;
 
     public boolean isCollided(Rectangle other) {
-        int thisRight = this.x + this.width;
-        int otherRight = other.x + other.width;
+        float x1 = this.location.x - (float) this.width / 2;
+        float y1 = this.location.y - (float) this.height / 2;
+        float x2 = other.location.x - (float) other.width / 2;
+        float y2 = other.location.y - (float) other.height / 2;
 
-        if (this.x < otherRight && thisRight > other.x &&
-                this.y < other.y && this.y > other.y) {
-            // Rectangles overlap
-            return true;
+        if (x1 + this.width < x2 || x2 + other.width < x1) {
+            return false;
         }
-
-        // Rectangles do not overlap
-        return false;
+        return !(y1 + this.height < y2) && !(y2 + other.height < y1);
     }
 
-    public Rectangle(int x, int y, int width, int height) {
-        this.x = x;
-        this.y = y;
+    public Rectangle(Location location, int width, int height) {
+        this.location = location;
         this.width = width;
-        this.height = height;
-    }
-
-    @Override
-    public String toString() {
-        return "Rectangle{" +
-                "x=" + x +
-                ", y=" + y +
-                ", width=" + width +
-                ", height=" + height +
-                '}';
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
         this.height = height;
     }
 }

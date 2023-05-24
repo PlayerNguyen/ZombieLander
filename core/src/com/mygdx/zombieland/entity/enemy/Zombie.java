@@ -19,7 +19,7 @@ import com.mygdx.zombieland.utils.VisualizeHelper;
 public class Zombie extends EnemyAbstract {
 
     public static final int ZOMBIE_SIZE = 64;
-//    public static final float ZOMBIE_MOVEMENT_SPEED = 30f; // Each type has different speed
+    //    public static final float ZOMBIE_MOVEMENT_SPEED = 30f; // Each type has different speed
     public static final long ZOMBIE_HIT_DURATION = 2000;
 
     private final World world;
@@ -88,16 +88,36 @@ public class Zombie extends EnemyAbstract {
         this.getSprite().draw(world.getBatch());
 
         // Draw rectangle boxes
-        Rectangle zombieRect = new Rectangle((int) (this.getLocation().x - 32), (int) (this.getLocation().y - 32), 64, 64);
-        Rectangle targetRect = new Rectangle((int) (this.target.getLocation().x - this.target.getSize() / 2),
-                (int) (this.target.getLocation().y - this.target.getSize() / 2), this.target.getSize(), this.target.getSize());
+//        Rectangle zombieRect = new Rectangle((int) (this.getLocation().x - 32), (int) (this.getLocation().y - 32), 64, 64);
+//        Rectangle targetRect = new Rectangle((int) (this.target.getLocation().x - this.target.getSize() / 2),
+//                (int) (this.target.getLocation().y - this.target.getSize() / 2), this.target.getSize(), this.target.getSize());
 
         // Debug
         if (this.getWorld().isDebug()) {
             VisualizeHelper.simulateBox(this.getWorld(), this);
             VisualizeHelper.simulateDirection(this.getWorld(), this);
         }
+//        if (this.world.getEntities())
+        for (Entity entity : this.world.getEntities()) {
+            if (entity instanceof Fence) {
+                Rectangle rectangle = new Rectangle(this.getCenterLocation(), ZOMBIE_SIZE, ZOMBIE_SIZE);
+
+                ;
+//                if (!getCenterLocation().add(32, 32)
+//                        .isCollided(entity.getCenterLocation(), (double) entity.getSize() / 2)) {
+//                    translate(2, 0);
+//                }
+                if (!rectangle.isCollided(new Rectangle(entity.getCenterLocation(), entity.getSize(), entity.getSize()))) {
+                    this.translate(2, 0);
+                }
+            }
+        }
     }
+
+    public void translate(float x, float y) {
+        this.getLocation().add(x, y);
+    }
+
 
     private void rotateToTarget() {
         // arc tan(y / x)
@@ -109,32 +129,25 @@ public class Zombie extends EnemyAbstract {
 //        this.setRotation((float) Math.toDegrees(atan2));
         // --------------------Duy modify tu day ---------------------------------------
         Location cur = this.getLocation();
-        Location temp = new Location(cur.x+1, 0);
-
-
+        Location temp = new Location(cur.x + 1, 0);
 
         float atan2 = (float) Math.atan2(temp.y - cur.y, temp.x - cur.x);
 
-        Location nxt= new Location((float) (cur.x + this.getDirection().x * 1+32), (float) (cur.y + this.getDirection().y * 1) + 32);
-        for(int i=300;i<=300;i++){
-            Location box= new Location(100-32, 300-32);
-            Rectangle rectangle1= new Rectangle((int) box.x, (int) box.y, 64, 64);
-            Rectangle rectangle2= new Rectangle((int) nxt.x, (int) nxt.y, 64, 64);
-            drawDebugRectangle(rectangle1, Color.GREEN);
-            drawDebugRectangle(rectangle2, Color.RED);
-            if(rectangle1.isCollided(rectangle2) == true){
-                // collision
-                atan2= (float) Math.atan2(cur.y+ 50 - cur.y, 10);
-                break;
-            }
-        }
+//        Location nxt = new Location((float) (cur.x + this.getDirection().x * 1 + 32), (float) (cur.y + this.getDirection().y * 1) + 32);
+//        for (int i = 300; i <= 300; i++) {
+//            Location box = new Location(300, 300);
+//            Rectangle rectangle1 = new Rectangle((int) box.x, (int) box.y, 64, 64);
+//            Rectangle rectangle2 = new Rectangle((int) nxt.x, (int) nxt.y, 64, 64);
+//
+//            if (rectangle1.isCollided(rectangle2)) {
+//                // collision
+////                atan2 = (float) Math.atan2(cur.y + 50, 10);
+//
+//                break;
+//            }
+//        }
 
         this.setRotation((float) Math.toDegrees(atan2));
-
-
-
-
-
 
     }
 
@@ -142,7 +155,7 @@ public class Zombie extends EnemyAbstract {
         ShapeRenderer shapeRenderer = this.getWorld().getShapeRenderer();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(color);
-        shapeRenderer.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
+//        shapeRenderer.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
         shapeRenderer.end();
     }
 

@@ -44,8 +44,6 @@ public class Location {
         return distance(location) - offset < 0;
     }
 
-
-
     /**
      * Sets new location.
      *
@@ -95,6 +93,10 @@ public class Location {
         this.y *= scalar;
         return this;
     }
+
+//    public createRect() {
+//
+//    }
 
     @Override
     public String toString() {
