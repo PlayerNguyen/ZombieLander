@@ -55,4 +55,8 @@ public class ZombieLandMain extends ApplicationAdapter {
         batch.dispose();
         this.world.dispose();
     }
+
+    public World getWorld() {
+        return world;
+    }
 }
