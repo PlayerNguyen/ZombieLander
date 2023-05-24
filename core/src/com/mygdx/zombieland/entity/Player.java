@@ -160,11 +160,22 @@ public class Player extends DamageableAbstract
 //         this.setRotation((float) Math.toDegrees(radRotation));
 
 // >>>>>>> feat/zombie-move
-        float radRotation = (float) ((float)
-                Math.atan2(-(this.location.y - Gdx.input.getY()),// Minus because y-down
-                        this.location.x - Gdx.input.getX()) + (Math.PI)
-        );
-        this.setRotation((float) Math.toDegrees(radRotation));
+         //        System.out.println(this.location);
+ //        System.out.println(Gdx.input.getY());
+ //        float radRotation = (float) ((float)
+ //                Math.atan2(-(this.location.y - Gdx.input.getY()),// Minus because y-down
+ //                        this.location.x - Gdx.input.getX()) + (Math.PI)
+ //        );
+ //        this.setRotation((float) Math.toDegrees(radRotation));
+
+         float mouseX = Gdx.input.getX();
+         float mouseY = Gdx.graphics.getHeight() - Gdx.input.getY(); // Invert Y-axis
+
+         // Calculate the direction vector
+         float deltaX = mouseX - this.location.x;
+         float deltaY = mouseY - this.location.y;
+         float radRotation = (float) Math.atan2(deltaY, deltaX);
+         this.setRotation(MathUtils.radiansToDegrees * radRotation);
         // Set the direction by using basic geometry
         this.direction.x = Math.cos(radRotation);
         this.direction.y = Math.sin(radRotation);
