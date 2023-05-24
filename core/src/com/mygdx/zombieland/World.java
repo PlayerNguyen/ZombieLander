@@ -124,9 +124,9 @@ public class World implements Renderable {
         // HUD initialization
         this.hud.create();
 
-        BGM_SOUND.setLooping(true);
-        BGM_SOUND.setVolume(this.getGameSetting().getMusicSoundLevel());
-        BGM_SOUND.play();
+//        BGM_SOUND.setLooping(true);
+//        BGM_SOUND.setVolume(this.getGameSetting().getMusicSoundLevel());
+//        BGM_SOUND.play();
     }
 
     @Override
