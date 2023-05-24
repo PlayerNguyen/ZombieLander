@@ -30,6 +30,7 @@ public class Fence implements Entity {
                 Map.getInstance().setArr(i, j, 1);
             }
         }
+//        this.world.createEntity(new Fence())
     }
 
     @Override

@@ -13,7 +13,7 @@ public class Map {
 
     public static synchronized Map getInstance() {
         if (instance == null) {
-            instance = new Map();
+            instance = new  Map();
         }
         return instance;
     }

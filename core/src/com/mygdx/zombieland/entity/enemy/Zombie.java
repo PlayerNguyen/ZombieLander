@@ -70,16 +70,16 @@ public class Zombie extends EnemyAbstract {
         if (this.world.getGameState().equals(GameState.PLAYING)) {
             this.updateMove();
 
-            // Update lerp
-            if (fraction < 1) {
-                fraction += Gdx.graphics.getDeltaTime() * speed;
-                this.getLocation().x += (this.destination.x - this.getLocation().x) * fraction;
-                this.getLocation().y += (this.destination.y - this.getLocation().y) * fraction;
-            }
-            this.getLocation().add(
-                    this.getDirection().x * Gdx.graphics.getDeltaTime() * speed * (this.getWorld().isDebug() ? 1 : 1),
-                    this.getDirection().y * Gdx.graphics.getDeltaTime() * speed * (this.getWorld().isDebug() ? 1 : 1)
-            );
+//            // Update lerp
+//            if (fraction < 1) {
+//                fraction += Gdx.graphics.getDeltaTime() * speed;
+//                this.getLocation().x += (this.destination.x - this.getLocation().x) * fraction;
+//                this.getLocation().y += (this.destination.y - this.getLocation().y) * fraction;
+//            }
+//            this.getLocation().add(
+//                    this.getDirection().x * Gdx.graphics.getDeltaTime() * speed * (this.getWorld().isDebug() ? 5 : 1),
+//                    this.getDirection().y * Gdx.graphics.getDeltaTime() * speed * (this.getWorld().isDebug() ? 5 : 1)
+//            );
         }
 
         // Export (render) image
@@ -87,76 +87,42 @@ public class Zombie extends EnemyAbstract {
         this.getSprite().setPosition(this.getLocation().x - 32, this.getLocation().y - 32);
         this.getSprite().draw(world.getBatch());
 
-        // Draw rectangle boxes
-//        Rectangle zombieRect = new Rectangle((int) (this.getLocation().x - 32), (int) (this.getLocation().y - 32), 64, 64);
-//        Rectangle targetRect = new Rectangle((int) (this.target.getLocation().x - this.target.getSize() / 2),
-//                (int) (this.target.getLocation().y - this.target.getSize() / 2), this.target.getSize(), this.target.getSize());
 
-        // Debug
         if (this.getWorld().isDebug()) {
             VisualizeHelper.simulateBox(this.getWorld(), this);
             VisualizeHelper.simulateDirection(this.getWorld(), this);
         }
-//        if (this.world.getEntities())
         for (Entity entity : this.world.getEntities()) {
             if (entity instanceof Fence) {
                 Rectangle rectangle = new Rectangle(this.getCenterLocation(), ZOMBIE_SIZE, ZOMBIE_SIZE);
-
-                ;
-//                if (!getCenterLocation().add(32, 32)
-//                        .isCollided(entity.getCenterLocation(), (double) entity.getSize() / 2)) {
-//                    translate(2, 0);
-//                }
                 if (!rectangle.isCollided(new Rectangle(entity.getCenterLocation(), entity.getSize(), entity.getSize()))) {
-                    this.translate(2, 0);
+                    rotateToTarget();
+                    this.translate((float) this.getDirection().x, (float) this.getDirection().y);
+                }
+                else{
+                    this.stay();
                 }
             }
         }
     }
+
 
     public void translate(float x, float y) {
         this.getLocation().add(x, y);
     }
 
 
-    private void rotateToTarget() {
-        // arc tan(y / x)
-
-//        Location temp = this.target.getLocation();
-//        Location cur = this.getLocation();
-//
-//        float atan2 = (float) Math.atan2(temp.y - cur.y, temp.x - cur.x);
-//        this.setRotation((float) Math.toDegrees(atan2));
-        // --------------------Duy modify tu day ---------------------------------------
-        Location cur = this.getLocation();
-        Location temp = new Location(cur.x + 1, 0);
-
-        float atan2 = (float) Math.atan2(temp.y - cur.y, temp.x - cur.x);
-
-//        Location nxt = new Location((float) (cur.x + this.getDirection().x * 1 + 32), (float) (cur.y + this.getDirection().y * 1) + 32);
-//        for (int i = 300; i <= 300; i++) {
-//            Location box = new Location(300, 300);
-//            Rectangle rectangle1 = new Rectangle((int) box.x, (int) box.y, 64, 64);
-//            Rectangle rectangle2 = new Rectangle((int) nxt.x, (int) nxt.y, 64, 64);
-//
-//            if (rectangle1.isCollided(rectangle2)) {
-//                // collision
-////                atan2 = (float) Math.atan2(cur.y + 50, 10);
-//
-//                break;
-//            }
-//        }
-
-        this.setRotation((float) Math.toDegrees(atan2));
-
+    private void stay(){
+        this.setSpeed(0F);
+        this.getDirection().set(0,0);
     }
 
-    private void drawDebugRectangle(Rectangle rect, Color color) {
-        ShapeRenderer shapeRenderer = this.getWorld().getShapeRenderer();
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(color);
-//        shapeRenderer.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
-        shapeRenderer.end();
+    private void rotateToTarget() {
+        Location cur = this.getLocation();
+        Location temp = new Location(this.target.getLocation().x, this.target.getLocation().y);
+        float atan2 = (float) Math.atan2(temp.y - cur.y, temp.x - cur.x);
+        this.setRotation((float) Math.toDegrees(atan2));
+
     }
 
     @Override
@@ -186,9 +152,7 @@ public class Zombie extends EnemyAbstract {
 
         // Update speed
         this.setSpeed(this.getType().getSpeed());
-//        this.speed = this.target.getLocation().distance(this.getLocation()) <= (float) this.target.getSize() / 2
-//                ? 0
-//                : this.getType().getSpeed();
+
 
         // Hit player when get close
         if (this.target.getLocation().distance(this.getLocation()) <= (float) this.target.getSize() / 2) {

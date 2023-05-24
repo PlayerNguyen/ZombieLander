@@ -103,7 +103,7 @@ public class World implements Renderable {
         // Add entities
 //        this.entities.add(new Fence(this, new Location(50, 100)));
 //        this.entities.add(new Fence(this, new Location(50, 200)));
-        this.entities.add(new Fence(this, new Location(100, 300)));
+        this.entities.add(new Fence(this, new Location(200, 255)));
 //        this.entities.add(new Fence(this, new Location(50, 400)));
 //        this.entities.add(new Fence(this, new Location(50, 500)));
 
@@ -123,13 +123,13 @@ public class World implements Renderable {
         // Zombie spawner
         this.spawners.clear();
         this.spawners.add(new ZombieSpawner(this,
-                new Location(15, 300), 50f, 5000));
+                new Location(15, 300), 80f, 5000));
         this.spawners.add(new ZombieSpawner(this,
-                new Location(15, 300), 50f, 5000));
+                new Location(15, 300), 80f, 5000));
         this.spawners.add(new ZombieSpawner(this,
-                new Location(15, 300), 50f, 5000));
+                new Location(15, 300), 80f, 5000));
         this.spawners.add(new ZombieSpawner(this,
-                new Location(15, 300), 50f, 5000));
+                new Location(15, 300), 80f, 5000));
         // Box spawner
         this.spawners.add(new BoxSpawner(this, new Location(this.getPlayer().getLocation()),
                 120f, 12000));
