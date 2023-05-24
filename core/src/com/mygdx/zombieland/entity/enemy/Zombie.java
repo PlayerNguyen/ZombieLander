@@ -33,6 +33,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.zombieland.World;
 import com.mygdx.zombieland.entity.Damageable;
 import com.mygdx.zombieland.entity.Entity;
+import com.mygdx.zombieland.entity.Player;
 import com.mygdx.zombieland.entity.undestructable.Fence;
 import com.mygdx.zombieland.location.Location;
 import com.mygdx.zombieland.location.Vector2D;
@@ -189,19 +190,21 @@ public class Zombie extends EnemyAbstract {
 // >>>>>>> feat/zombie-move
        boolean ok= true;
         for (Entity entity : this.world.getEntities()) {
-            if (entity instanceof Fence) {
-                Rectangle rectangle = new Rectangle(this.getCenterLocation(), ZOMBIE_SIZE, ZOMBIE_SIZE);
-                if (!rectangle.isCollided(new Rectangle(entity.getCenterLocation(), entity.getSize(), entity.getSize()))) {
-                    // pass
-                }
-                else{
-                    System.out.println("colision");
-                    ok= false;
-                    break;
-                }
+            if (!(entity instanceof Fence) && !(entity instanceof Player) ) {
+                continue;
             }
+
+            Rectangle rectangle = new Rectangle(this.getCenterLocation(), ZOMBIE_SIZE, ZOMBIE_SIZE);
+            if (!rectangle.isCollided(new Rectangle(entity.getCenterLocation(), entity.getSize(), entity.getSize()))) {
+                // pass
+                continue;
+            }
+
+            System.out.println("colision");
+            ok= false;
+            break;
         }
-        if(ok == true && reactionRate==0)
+        if(ok && reactionRate==0)
         {
             this.translate((float) this.getDirection().x, (float) this.getDirection().y);
             rotateToTarget();
