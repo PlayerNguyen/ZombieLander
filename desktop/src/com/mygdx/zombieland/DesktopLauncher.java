@@ -4,9 +4,17 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import org.lwjgl.Version;
 
+import javax.swing.*;
+import java.awt.*;
+
 // Please note that on macOS your application needs to be started with the -XstartOnFirstThread JVM argument
 public class DesktopLauncher {
+
     public static void main(String[] arg) {
+        spawnGame();
+    }
+
+    public static void spawnGame() {
         System.out.println("Game loading with lwjgl3 version " + Version.getVersion());
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         ZombieLandMain zombieLandMain = new ZombieLandMain();

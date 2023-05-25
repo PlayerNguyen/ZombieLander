@@ -6,12 +6,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.zombieland.World;
 import com.mygdx.zombieland.entity.Entity;
 import com.mygdx.zombieland.location.Location;
+import com.mygdx.zombieland.location.Vector2D;
 import com.mygdx.zombieland.runnable.DamageEntityOnShootRunnable;
 import com.mygdx.zombieland.utils.MathHelper;
 import com.mygdx.zombieland.utils.RayHelper;
 import com.mygdx.zombieland.utils.VisualizeHelper;
 import com.mygdx.zombieland.weapon.Gun;
 
+import java.util.Collection;
 import java.util.Set;
 
 public class PistolProjectile extends AbstractProjectile {
@@ -37,13 +39,17 @@ public class PistolProjectile extends AbstractProjectile {
         Gdx.app.log("Projectile", "Generated projectile @" + System.identityHashCode(this));
 
         // Project a straight-forward ray from player location to estimate triggered entity
-        Set<Entity> damageEntities = RayHelper.projectCollectionRay(this, 16);
+        final Location destinationLocation = new Location(
+                this.getLocation()
+        ).add(new Vector2D(this.getDirection()).scalar(500));
 
-        // Damage entities from the list above
-        this.getWorld().getScheduler().runTaskAfter(new DamageEntityOnShootRunnable(this,
-                                this.getDamage(),
-                                damageEntities),
-                        0);
+        Collection<Entity> entitiesFromMap = RayHelper.rayMap(getWorld().getEntitiesMap(), getLocation(), destinationLocation);
+        System.out.println("entities on the ray = " + entitiesFromMap);
+//         Damage entities from the list above
+        getWorld().getScheduler().runTaskAfter(new DamageEntityOnShootRunnable(this,
+                        getDamage(),
+                        entitiesFromMap),
+                20);
     }
 
     @Override
@@ -62,31 +68,32 @@ public class PistolProjectile extends AbstractProjectile {
         this.getSprite().setPosition(this.getLocation().x, this.getLocation().y);
         this.getSprite().setRotation(this.getRotation());
         // Update bullet location from direction
-        this.getLocation().x = (float) (this.getLocation().x + (this.getDirection().x * 120));
-        this.getLocation().y = (float) (this.getLocation().y + (this.getDirection().y * 120));
+        this.getLocation().x = (float) (this.getLocation().x + (this.getDirection().x * Gdx.graphics.getDeltaTime() * 2000));
+        this.getLocation().y = (float) (this.getLocation().y + (this.getDirection().y * Gdx.graphics.getDeltaTime() * 2000));
 
         // Draw the texture when it's far away from the player
         if (this.getLocation().distance(this.getProjectileSource().getLocation()) >=
                 this.getWorld().getPlayer().getSize() + 32) {
-            this.getSprite().draw(this.getWorld().getBatch());
+//            this.getSprite().draw(this.getWorld().getBatch());
         }
 
         // Check collision
         for (final Entity entity : this.getWorld().getEntities()) {
             Location entityLocation = new Location(entity.getLocation());
-            // Visual trace to entity
-            if (this.getWorld().isDebug()) {
-                VisualizeHelper.simulateLine(this.getWorld(), entityLocation, this.getLocation(), Color.BLUE);
-            }
 
             // Hit the entity
             if (entityLocation.distance(this.getLocation()) <= (float) entity.getSize() / 2F) {
-
                 Gdx.app.log("Triggered", "Hit to entity ...");
                 // Set triggered
                 setHit(true);
             }
         }
+
+        Location destinationLocation = new Location(
+                this.getLocation()
+        ).add(new Vector2D(this.getDirection()).scalar(500));
+
+        VisualizeHelper.simulateLine(this.getWorld(), new Location(this.getLocation()), destinationLocation, Color.YELLOW);
     }
 
     @Override
