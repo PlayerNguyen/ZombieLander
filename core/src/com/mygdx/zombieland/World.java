@@ -108,7 +108,7 @@ public class World implements Renderable {
         this.player = new Player(this);
         this.player.create();
 
-        this.entities.add(new Fence(this, new Location(200, 255)));
+        this.entities.add(new Fence(this, new Location(this.player.getLocation().x , this.player.getLocation().y - 100)));
 
         // Load entities
         for (Entity entity : entities) {
@@ -132,7 +132,7 @@ public class World implements Renderable {
 //        this.spawners.add(new ZombieSpawner(this,
 //                new Location(60, 300), 80f, 2000));
 
-        Zombie entity = (Zombie) createEntity(new Zombie(this, new Location(300, 300), this.player, ZombieType.ZOMBIE));
+        Zombie entity = (Zombie) createEntity(new Zombie(this, new Location(400-65, 300), this.player, ZombieType.ZOMBIE));
         entity.setHealth(99999);
         // Box spawner
         this.spawners.add(new BoxSpawner(this, new Location(this.getPlayer().getLocation()),
@@ -146,7 +146,7 @@ public class World implements Renderable {
 
 //        BGM_SOUND.setLooping(true);
 //        BGM_SOUND.setVolume(this.getGameSetting().getMusicSoundLevel());
-//        BGM_SOUND.play();
+//        BGM_SOUND.play();s
     }
 
     @Override

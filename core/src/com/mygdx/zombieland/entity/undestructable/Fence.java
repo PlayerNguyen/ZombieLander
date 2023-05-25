@@ -40,8 +40,8 @@ public class Fence implements Entity {
         // Only update the fence once
         this.getWorld().updateEntityMaskPosition(this);
         EntityMask entityMask = this.getWorld().getEntityMask(this);
-        for (int x = entityMask.getLeft(); x < entityMask.getRight(); x++) {
-            for (int y = entityMask.getBottom(); y < entityMask.getTop(); y++) {
+        for (int x = entityMask.getLeft()-32; x < entityMask.getRight() + 32; x++) {
+            for (int y = entityMask.getBottom() -32; y < entityMask.getTop() + 32; y++) {
                 this.getWorld().setBlockMoveAtPosition(x, y, true);
             }
         }

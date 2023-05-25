@@ -52,4 +52,5 @@ public abstract class DamageableAbstract
         return new Location(this.getLocation().x - ((float) this.getSize() / 2)
                 , this.getLocation().y - ((float) this.getSize() / 2));
     }
+
 }
