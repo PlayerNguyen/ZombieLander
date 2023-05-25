@@ -33,6 +33,11 @@ public class VisualizeHelper {
         simulateLine(world, entity.getLocation(), offsetLocation, color);
     }
 
+    public static void simulateVector(World world, Location start, Vector2D vector2D, Color color) {
+        Location offsetLocation = new Location(start).add(vector2D);
+        simulateLine(world, start, offsetLocation, color);
+    }
+
     public static void simulateDirection(World world, Entity entity) {
         simulateDirection(world, entity, Color.RED);
     }

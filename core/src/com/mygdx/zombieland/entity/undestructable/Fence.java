@@ -69,7 +69,6 @@ public class Fence implements Entity {
                             .get(x, y);
                     this.lastUpdatedChunks.add(currentChunk);
                     currentChunk.add(this);
-
                 }
             }
 

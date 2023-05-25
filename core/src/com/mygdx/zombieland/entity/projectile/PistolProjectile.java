@@ -39,16 +39,15 @@ public class PistolProjectile extends AbstractProjectile {
         Gdx.app.log("Projectile", "Generated projectile @" + System.identityHashCode(this));
 
         // Project a straight-forward ray from player location to estimate triggered entity
-//        Set<Entity> damageEntities = RayHelper.projectCollectionRay(this, 16, this.getWorld());
-        Location destinationLocation = new Location(
+        final Location destinationLocation = new Location(
                 this.getLocation()
         ).add(new Vector2D(this.getDirection()).scalar(500));
 
-        Collection<Entity> entitiesFromMap = RayHelper.rayMap(this.getWorld().getEntitiesMap(), this.getLocation(), destinationLocation);
+        Collection<Entity> entitiesFromMap = RayHelper.rayMap(getWorld().getEntitiesMap(), getLocation(), destinationLocation);
         System.out.println("entities on the ray = " + entitiesFromMap);
 //         Damage entities from the list above
-        this.getWorld().getScheduler().runTaskAfter(new DamageEntityOnShootRunnable(this,
-                        this.getDamage(),
+        getWorld().getScheduler().runTaskAfter(new DamageEntityOnShootRunnable(this,
+                        getDamage(),
                         entitiesFromMap),
                 20);
     }
