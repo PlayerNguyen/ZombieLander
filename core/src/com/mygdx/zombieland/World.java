@@ -395,8 +395,10 @@ public class World implements Renderable {
             }
         }
 
-
-        VisualizeHelper.drawFastMatrix(this, this.getMovableMask(), 4, 1, Color.RED);
+        // Render block movement area if user are in debug mode
+        if (this.isDebug()) {
+            VisualizeHelper.drawFastMatrix(this, this.getMovableMask(), 4, 1, Color.RED);
+        }
     }
 
     @Override
