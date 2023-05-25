@@ -3,7 +3,6 @@ package com.mygdx.zombieland;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -18,7 +17,6 @@ import com.mygdx.zombieland.entity.Player;
 import com.mygdx.zombieland.entity.projectile.Projectile;
 import com.mygdx.zombieland.entity.enemy.Zombie;
 import com.mygdx.zombieland.entity.enemy.ZombieType;
-import com.mygdx.zombieland.entity.projectile.Projectile;
 import com.mygdx.zombieland.entity.undestructable.Fence;
 
 import com.mygdx.zombieland.hud.HUD;
@@ -27,18 +25,17 @@ import com.mygdx.zombieland.inventory.InventoryPistol;
 import com.mygdx.zombieland.inventory.InventoryRifle;
 import com.mygdx.zombieland.location.Location;
 import com.mygdx.zombieland.location.Vector2D;
-import com.mygdx.zombieland.map.Map;
 import com.mygdx.zombieland.scheduler.Scheduler;
 import com.mygdx.zombieland.setting.GameSetting;
 import com.mygdx.zombieland.spawner.BoxSpawner;
 import com.mygdx.zombieland.spawner.Spawner;
-import com.mygdx.zombieland.spawner.ZombieSpawner;
 import com.mygdx.zombieland.state.GameState;
+import com.mygdx.zombieland.utils.EntityMask;
+import com.mygdx.zombieland.utils.FastMatrix;
 import com.mygdx.zombieland.utils.VisualizeHelper;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import static com.mygdx.zombieland.state.GameState.PAUSING;
@@ -75,7 +72,9 @@ public class World implements Renderable {
     private final Scheduler scheduler;
     private final TextIndicator textIndicator;
     private final HUD hud;
-    private final MapRenderer<Entity> entitiesMap;
+    //    private final MapRenderer<Entity> entitiesMap;
+    private final FastMatrix<Set<Entity>> entitiesMap;
+    private final FastMatrix<Boolean> movableMask;
 
     public World(SpriteBatch batch) {
         this.gameSetting = new GameSetting();
@@ -91,7 +90,8 @@ public class World implements Renderable {
         this.hud = new HUD(this);
         this.debug = false;
         this.inventory = new Inventory(this);
-        this.entitiesMap = new MapRenderer<>(WINDOW_WIDTH, WINDOW_HEIGHT);
+        this.entitiesMap = new FastMatrix<>();
+        this.movableMask = new FastMatrix<>();
     }
 
 
@@ -122,8 +122,8 @@ public class World implements Renderable {
 
         // Load spawners
         // Zombie spawner
-        this.spawners.clear();
-        //        this.spawners.add(new ZombieSpawner(this,
+//        this.spawners.clear();
+//                this.spawners.add(new ZombieSpawner(this,
 //                new Location(15, 300), 80f, 5000));
 //        this.spawners.add(new ZombieSpawner(this,
 //                new Location(15, 300), 80f, 5000));
@@ -396,11 +396,7 @@ public class World implements Renderable {
         }
 
 
-//        for (int i = 0; i < WINDOW_WIDTH; i+= 8) {
-//            for (int j = 0; j < WINDOW_HEIGHT; j+= 8) {
-//                VisualizeHelper.simulateCircle(this, new Location(i, j), 2F);
-//            }
-//        }
+        VisualizeHelper.drawFastMatrix(this, this.getMovableMask(), 4, 1, Color.RED);
     }
 
     @Override
@@ -533,7 +529,67 @@ public class World implements Renderable {
         this.setGameState(PLAYING);
     }
 
-    public MapRenderer<Entity> getEntitiesMap() {
+    public FastMatrix<Set<Entity>> getEntitiesMap() {
         return entitiesMap;
+    }
+
+    public Collection<Set<Entity>> updateEntityMaskPosition(Entity entity) {
+        Collection<Set<Entity>> updatedSets = new ArrayList<>();
+        if (!(entity.getLocation().x > 0)
+                || !(entity.getLocation().y > 0)
+                || !(entity.getLocation().x < World.WINDOW_WIDTH)
+                || !(entity.getLocation().y < World.WINDOW_HEIGHT)
+        ) {
+            return updatedSets;
+        }
+
+        EntityMask entityMask = this.getEntityMask(entity);
+
+        for (int x = entityMask.getLeft(); x < entityMask.getRight(); x++) {
+            for (int y = entityMask.getBottom(); y < entityMask.getTop(); y++) {
+                // Set entity chunk
+                Set<Entity> currentChunk = entity.getWorld()
+                        .getEntitiesMap()
+                        .get(x, y);
+
+                // Create a new set and interact with a value of the set
+                if (currentChunk == null) {
+                    Set<Entity> entities = Collections.newSetFromMap(new ConcurrentHashMap<Entity, Boolean>());
+                    entities.add(entity);
+                    entity.getWorld().getEntitiesMap().set(x, y, entities);
+                    updatedSets.add(entities);
+                    continue;
+                }
+
+                currentChunk.add(entity);
+                updatedSets.add(currentChunk);
+            }
+        }
+        return updatedSets;
+    }
+
+    /**
+     * Returns the value of the entity position, which addition with size.
+     * The result is an array of numbers contains a position as clock-wise position started from the top.
+     *
+     * @param entity the entity to get mask
+     * @return an array of numbers contains a position as clock-wise position started from the top.
+     */
+    public EntityMask getEntityMask(Entity entity) {
+        int left = (int) (entity.getLocation().x - entity.getSize() / 2);
+        int bottom = (int) (entity.getLocation().y - entity.getSize() / 2);
+        int top = (int) (entity.getLocation().y + entity.getSize() / 2);
+        int right = (int) (entity.getLocation().x + entity.getSize() / 2);
+
+        return new EntityMask(top, right, bottom, left);
+    }
+
+    public void setBlockMoveAtPosition(int x, int y, boolean isBlockMove) {
+        // Set movable mask
+        this.movableMask.set(x, y, isBlockMove);
+    }
+
+    public FastMatrix<Boolean> getMovableMask() {
+        return movableMask;
     }
 }

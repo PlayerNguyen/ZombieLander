@@ -8,9 +8,11 @@ import com.mygdx.zombieland.entity.Entity;
 import com.mygdx.zombieland.location.Location;
 import com.mygdx.zombieland.location.Vector2D;
 import com.mygdx.zombieland.map.Map;
+import com.mygdx.zombieland.utils.EntityMask;
 import com.mygdx.zombieland.utils.VisualizeHelper;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
@@ -22,12 +24,11 @@ public class Fence implements Entity {
     private Sprite sprite;
     private final World world;
     private final Location location;
-    private final Collection<Set<Entity>> lastUpdatedChunks;
+//    private final Collection<Set<Entity>> lastUpdatedChunks;
 
     public Fence(World world, Location location) {
         this.world = world;
         this.location = location;
-        this.lastUpdatedChunks = new LinkedList<>();
     }
 
     @Override
@@ -35,6 +36,16 @@ public class Fence implements Entity {
         this.sprite = new Sprite(texture);
         this.sprite.setSize(SPRITE_SIZE, SPRITE_SIZE);
         this.sprite.setOrigin((float) this.getSize() / 2, (float) this.getSize() / 2);
+
+        // Only update the fence once
+        this.getWorld().updateEntityMaskPosition(this);
+        EntityMask entityMask = this.getWorld().getEntityMask(this);
+        for (int x = entityMask.getLeft(); x < entityMask.getRight(); x++) {
+            for (int y = entityMask.getBottom(); y < entityMask.getTop(); y++) {
+                this.getWorld().setBlockMoveAtPosition(x, y, true);
+            }
+        }
+
     }
 
     @Override
@@ -49,43 +60,9 @@ public class Fence implements Entity {
         if (this.getWorld().isDebug()) {
             VisualizeHelper.simulateBox(this.getWorld(), this);
             VisualizeHelper.simulateBox(this.getWorld(), this.getCenterLocation(), SPRITE_SIZE);
+            VisualizeHelper.visualizeEntityRealtimeMap(this, FENCE_DEBUG_MAP_DENSITY);
         }
 
-
-        if (this.getLocation().x > 0
-                && this.getLocation().y > 0
-                && this.getLocation().x < World.WINDOW_WIDTH
-                && this.getLocation().y < World.WINDOW_HEIGHT
-        ) {
-            int left = (int) (this.getLocation().x - SPRITE_SIZE / 2);
-            int bottom = (int) (this.getLocation().y - SPRITE_SIZE / 2);
-            int top = (int) (this.getLocation().y + SPRITE_SIZE / 2);
-            int right = (int) (this.getLocation().x + SPRITE_SIZE / 2);
-
-            for (int x = left; x < right; x++) {
-                for (int y = bottom; y < top; y++) {
-                    Set<Entity> currentChunk = this.getWorld()
-                            .getEntitiesMap()
-                            .get(x, y);
-                    this.lastUpdatedChunks.add(currentChunk);
-                    currentChunk.add(this);
-                }
-            }
-
-            if (this.getWorld().isDebug()) {
-                for (int x = left; x < right; x += FENCE_DEBUG_MAP_DENSITY) {
-                    for (int y = bottom; y < top; y += FENCE_DEBUG_MAP_DENSITY) {
-                        VisualizeHelper.simulateCircle(this.getWorld(), new Location(x, y), 1);
-                    }
-                }
-                VisualizeHelper
-                        .simulateText(this.getWorld(),
-                                new Location(left - 6, bottom - 6),
-                                String.format("%d, %d", left, bottom),
-                                new Color(1, 1, 1, 1)
-                        );
-            }
-        }
     }
 
     @Override
