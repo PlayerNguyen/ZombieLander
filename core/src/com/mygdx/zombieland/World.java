@@ -29,6 +29,7 @@ import com.mygdx.zombieland.scheduler.Scheduler;
 import com.mygdx.zombieland.setting.GameSetting;
 import com.mygdx.zombieland.spawner.BoxSpawner;
 import com.mygdx.zombieland.spawner.Spawner;
+import com.mygdx.zombieland.spawner.ZombieSpawner;
 import com.mygdx.zombieland.state.GameState;
 import com.mygdx.zombieland.utils.EntityMask;
 import com.mygdx.zombieland.utils.FastMatrix;
@@ -108,7 +109,8 @@ public class World implements Renderable {
         this.player = new Player(this);
         this.player.create();
 
-        this.entities.add(new Fence(this, new Location(this.player.getLocation().x , this.player.getLocation().y - 100)));
+        this.entities.add(new Fence(this, new Location(this.player.getLocation().x -200 , this.player.getLocation().y)));
+        this.entities.add(new Fence(this, new Location(this.player.getLocation().x , this.player.getLocation().y + 200)));
 
         // Load entities
         for (Entity entity : entities) {
@@ -132,11 +134,14 @@ public class World implements Renderable {
 //        this.spawners.add(new ZombieSpawner(this,
 //                new Location(60, 300), 80f, 2000));
 
-        Zombie entity = (Zombie) createEntity(new Zombie(this, new Location(400-65, 300), this.player, ZombieType.ZOMBIE));
-        entity.setHealth(99999);
+        this.spawners.add(new ZombieSpawner(this,
+                new Location(this.player.getLocation().x - 300, this.player.getLocation().y), 0, 5000));
+        this.spawners.add(new ZombieSpawner(this,
+                new Location(this.player.getLocation().x, this.player.getLocation().y + 300), 0, 5000));
         // Box spawner
         this.spawners.add(new BoxSpawner(this, new Location(this.getPlayer().getLocation()),
                 120f, 12000));
+
         for (Spawner spawner : this.spawners) {
             spawner.create();
         }
