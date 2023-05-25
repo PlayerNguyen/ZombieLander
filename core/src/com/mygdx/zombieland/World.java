@@ -46,8 +46,8 @@ import static com.mygdx.zombieland.state.GameState.PLAYING;
 
 public class World implements Renderable {
 
-    private static final int WINDOW_WIDTH = 800;
-    private static final int WINDOW_HEIGHT = 600;
+    public static final int WINDOW_WIDTH = 800;
+    public static final int WINDOW_HEIGHT = 600;
     private static final Texture BACKGROUND_TEXTURE = new Texture(Gdx.files.internal("background.png"));
     private static final Texture LOGO_TEXTURE = new Texture(Gdx.files.internal("logo.png"));
     //    private static final Music BGM_SOUND = Gdx.audio.newMusic(Gdx.files.internal("audio/BGM.mp3"));
@@ -75,7 +75,7 @@ public class World implements Renderable {
     private final Scheduler scheduler;
     private final TextIndicator textIndicator;
     private final HUD hud;
-    private final MapRenderer<HashSet<Entity>> entitiesMap;
+    private final MapRenderer<Entity> entitiesMap;
 
     public World(SpriteBatch batch) {
         this.gameSetting = new GameSetting();
@@ -91,7 +91,7 @@ public class World implements Renderable {
         this.hud = new HUD(this);
         this.debug = false;
         this.inventory = new Inventory(this);
-        this.entitiesMap = new MapRenderer<>(WINDOW_WIDTH, WINDOW_HEIGHT, new HashSet<Entity>());
+        this.entitiesMap = new MapRenderer<>(WINDOW_WIDTH, WINDOW_HEIGHT);
     }
 
 
@@ -129,9 +129,11 @@ public class World implements Renderable {
 //                new Location(15, 300), 80f, 5000));
 //        this.spawners.add(new ZombieSpawner(this,
 //                new Location(15, 300), 80f, 5000));
-        this.spawners.add(new ZombieSpawner(this,
-                new Location(15, 300), 80f, 5000));
+//        this.spawners.add(new ZombieSpawner(this,
+//                new Location(60, 300), 80f, 2000));
 
+        Zombie entity = (Zombie) createEntity(new Zombie(this, new Location(300, 300), this.player, ZombieType.ZOMBIE));
+        entity.setHealth(99999);
         // Box spawner
         this.spawners.add(new BoxSpawner(this, new Location(this.getPlayer().getLocation()),
                 120f, 12000));
@@ -393,6 +395,7 @@ public class World implements Renderable {
             }
         }
 
+
 //        for (int i = 0; i < WINDOW_WIDTH; i+= 8) {
 //            for (int j = 0; j < WINDOW_HEIGHT; j+= 8) {
 //                VisualizeHelper.simulateCircle(this, new Location(i, j), 2F);
@@ -530,7 +533,7 @@ public class World implements Renderable {
         this.setGameState(PLAYING);
     }
 
-    public MapRenderer<HashSet<Entity>> getEntitiesMap() {
+    public MapRenderer<Entity> getEntitiesMap() {
         return entitiesMap;
     }
 }

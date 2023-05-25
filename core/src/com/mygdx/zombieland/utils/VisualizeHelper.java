@@ -1,5 +1,6 @@
 package com.mygdx.zombieland.utils;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.zombieland.World;
@@ -98,5 +99,14 @@ public class VisualizeHelper {
         world.getShapeRenderer().end();
 
         world.getBatch().begin();
+    }
+
+    public static void simulateText(World world, Location location, String text, Color c) {
+        world.getFont().setColor(c);
+        world.getFont().draw(world.getBatch(),
+                text,
+                location.x,
+                location.y
+        );
     }
 }

@@ -1,6 +1,5 @@
 package com.mygdx.zombieland.entity.enemy;
 
-import com.badlogic.gdx.Gdx;
 // <<<<<<< master
 // import com.badlogic.gdx.graphics.Texture;
 // import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -29,24 +28,21 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.mygdx.zombieland.World;
-import com.mygdx.zombieland.effects.TextIndicator;
 import com.mygdx.zombieland.entity.Damageable;
 import com.mygdx.zombieland.entity.Entity;
 import com.mygdx.zombieland.entity.Player;
 import com.mygdx.zombieland.entity.undestructable.Fence;
 import com.mygdx.zombieland.location.Location;
 import com.mygdx.zombieland.location.Vector2D;
-import com.mygdx.zombieland.map.Map;
 import com.mygdx.zombieland.state.GameState;
+import com.mygdx.zombieland.utils.CoordinateHelper;
+import com.mygdx.zombieland.utils.Pair;
 import com.mygdx.zombieland.utils.Rectangle;
 import com.mygdx.zombieland.utils.VisualizeHelper;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class Zombie extends EnemyAbstract {
 
@@ -54,19 +50,18 @@ public class Zombie extends EnemyAbstract {
     //  public static final float ZOMBIE_MOVEMENT_SPEED = 30f; // Each type has different speed
 
     public static final long ZOMBIE_HIT_DURATION = 2000;
+    public static final short ZOMBIE_DEBUG_MAP_DENSITY = 8; // Only change if needed [1 - ZOMBIE_SIZE]
 
     private final World world;
     private final Entity target;
     private final ZombieType type;
 
     private Location destination;
-    private float fraction = 1;
     private float speed; // Zombie movement speed
 
     private long lastHit = 0;
-    private TextIndicator.TextItem currentTextItem = null;
 
-    private Set<Entity> lastMovedBlock;
+    private final List<Set<Entity>> lastUpdateChunks = new ArrayList<>();
 
     public Zombie(World world, Location startLocation, Entity target, ZombieType type) {
         super(startLocation, new Vector2D(), null, null, type.getHealth());
@@ -89,7 +84,6 @@ public class Zombie extends EnemyAbstract {
         // Set direction to the target
         this.getDirection().x = Math.sin(this.getRotation());
         this.getDirection().y = -Math.cos(this.getRotation());
-
     }
 
     @Override
@@ -131,41 +125,73 @@ public class Zombie extends EnemyAbstract {
 
 
     // >>>>>>> feat/zombie-move
-    private int reactionRate = 0;
+    private final int reactionRate = 0;
 
     @Override
     public void render() {
-
-        // Put the zombie onto the map
-        if (this.lastMovedBlock != null) {
-            this.lastMovedBlock.remove(this);
-            System.out.println(this.lastMovedBlock);
-        }
-
-        if (this.getLocation().x > 0 && this.getLocation().y > 0) {
-            HashSet<Entity> currentBlock = this.getWorld()
-                    .getEntitiesMap()
-                    .get((int) this.getLocation().x, (int) this.getLocation().y);
-            currentBlock.add(this);
-            this.lastMovedBlock = currentBlock;
-            System.out.println(this.lastMovedBlock);
-        }
-
-
-        if (this.world.getGameState().equals(GameState.PLAYING)) {
-            this.updateMove();
-        }
 
         // Export (render) image
         this.getSprite().setRotation(this.getRotation());
         this.getSprite().setPosition(this.getLocation().x - 32, this.getLocation().y - 32);
         this.getSprite().draw(world.getBatch());
 
+        if (this.world.getGameState().equals(GameState.PLAYING)) {
+            this.updateMove();
+        }
+
+
+        // Put the zombie onto the map
+        for (Set<Entity> lastUpdateChunkSet : this.lastUpdateChunks) {
+            lastUpdateChunkSet.remove(this);
+        }
+
+        this.lastUpdateChunks.clear();
+
+        if (this.getLocation().x > 0
+                && this.getLocation().y > 0
+                && this.getLocation().x < World.WINDOW_WIDTH
+                && this.getLocation().y < World.WINDOW_HEIGHT
+        ) {
+            int left = (int) (this.getLocation().x - ZOMBIE_SIZE / 2);
+            int bottom = (int) (this.getLocation().y - ZOMBIE_SIZE / 2);
+            int top = (int) (this.getLocation().y + ZOMBIE_SIZE / 2);
+            int right = (int) (this.getLocation().x + ZOMBIE_SIZE / 2);
+
+            for (int x = left; x < right; x++) {
+                for (int y = bottom; y < top; y++) {
+                    Set<Entity> currentChunk = this.getWorld()
+                            .getEntitiesMap()
+                            .get(x, y);
+                    this.lastUpdateChunks.add(currentChunk);
+                    currentChunk.add(this);
+
+                }
+            }
+
+            // Render the mash when debug is on to check the 2d map
+            if (this.getWorld().isDebug()) {
+                for (int x = left; x < right; x += ZOMBIE_DEBUG_MAP_DENSITY) {
+                    for (int y = bottom; y < top; y += ZOMBIE_DEBUG_MAP_DENSITY) {
+                        VisualizeHelper.simulateCircle(this.getWorld(), new Location(x, y), 1);
+                    }
+                }
+                VisualizeHelper
+                        .simulateText(this.getWorld(),
+                                new Location(left - 6, bottom - 6),
+                                String.format("%d, %d", left, bottom),
+                                new Color(1, 1, 1, 1)
+                        );
+            }
+        }
+
         // Debug
         if (this.getWorld().isDebug()) {
             VisualizeHelper.simulateBox(this.getWorld(), this);
             VisualizeHelper.simulateDirection(this.getWorld(), this);
         }
+
+
+        pathFinder(this.getLocation(), this.target.getLocation());
 
         boolean ok = true;
         for (Entity entity : this.world.getEntities()) {
@@ -179,21 +205,88 @@ public class Zombie extends EnemyAbstract {
                 continue;
             }
 
-            System.out.println("colision");
+//            System.out.println("colision");
             ok = false;
             break;
         }
-        if (ok && reactionRate == 0) {
-            this.translate((float) this.getDirection().x * speed * Gdx.graphics.getDeltaTime(),
-                    (float) this.getDirection().y * speed * Gdx.graphics.getDeltaTime());
-            rotateToTarget();
-        } else {
-            this.translate(0, 1);
-            reactionRate++;
-            reactionRate %= Gdx.graphics.getDeltaTime() + 20;
+
+
+//        if (ok && reactionRate == 0) {
+//            this.translate((float) this.getDirection().x * speed * Gdx.graphics.getDeltaTime(),
+//                    (float) this.getDirection().y * speed * Gdx.graphics.getDeltaTime());
+//            rotateToTarget();
+//        } else {
+//            this.translate(0, 1);
+//            reactionRate++;
+//            reactionRate %= Gdx.graphics.getDeltaTime() + 20;
+//        }
+    }
+    int i = 0;
+    public void pathFinder(Location start, Location end) {
+        System.out.println("start = " + start);
+        System.out.println("end = " + end);
+        boolean[][] visited = new boolean[801][601];
+        for (int x = 0; x < visited.length; x++) {
+            for (int y = 0; y < visited[i].length; y++) {
+                visited[x][y] = false;
+            }
+        }
+        int[][] min = new int[801][601];
+        int[] dr = new int[]{-1, 1, 0, 0};
+        int[] dc = new int[]{0, 0, 1, -1};
+
+        Queue<CoordinateHelper.Coordinate> cq = new ArrayDeque<>();
+        cq.add(new CoordinateHelper.Coordinate(start));
+        visited[(int) start.x][(int) start.y] = true;
+
+        while (!cq.isEmpty()) {
+            CoordinateHelper.Coordinate curCoordinate = cq.poll();
+            if (curCoordinate.x % 10 == 0 && curCoordinate.y  % 10 == 0) {
+                VisualizeHelper.simulateCircle(this.getWorld(), new Location(curCoordinate.x, curCoordinate.y), 1F);
+            }
+            if (curCoordinate.x == end.x && curCoordinate.y == end.y) {
+                System.out.println("Found target at " + end.x + ", " + end.y);
+                return;
+            }
+
+            for (int i = 0; i < 4; i++) {
+                int x = (int) (curCoordinate.x + dr[i]);
+                int y = (int) (curCoordinate.y + dc[i]);
+
+                if (x < 0 || y < 0) continue;
+                if (x >= World.WINDOW_WIDTH || y >= World.WINDOW_HEIGHT) continue;
+                // add blocking way here
+                if (!allowMove(new CoordinateHelper.Coordinate(x, y))) {
+                    continue;
+                }
+
+                if (!visited[x][y]) {
+                    min[x][y] = min[(int) curCoordinate.x][(int) curCoordinate.y] + 1;
+                    visited[x][y] = true;
+                    cq.add(new CoordinateHelper.Coordinate(x, y));
+                }
+            }
+        }
+
+        for (int k = 0; k < visited.length; k++) {
+            boolean[] booleans = visited[k];
+            for (int j = 0; j < booleans.length; j++) {
+                boolean aBoolean = booleans[j];
+
+                if (aBoolean) {
+                    VisualizeHelper.simulateCircle(this.getWorld(), new Location(k, j), 15F);
+                }
+            }
         }
     }
 
+    private boolean allowMove(CoordinateHelper.Coordinate coordinate) {
+        Set<Entity> entities = this.getWorld().getEntitiesMap().get((int) coordinate.x, (int) coordinate.y);
+        for (Entity entity : entities) {
+            if (entity instanceof Fence) return false;
+        }
+        return true;
+    }
 
     public void translate(float x, float y) {
         this.getLocation().add(x, y);
@@ -212,13 +305,12 @@ public class Zombie extends EnemyAbstract {
 
     @Override
     public void dispose() {
-        this.getTexture().dispose();
+//        this.getTexture().dispose();
     }
 
 
     @Override
     public Location lerp(Location moveTo, float speed) {
-        this.fraction = 0;
         this.destination = new Location(moveTo.x, moveTo.y);
         // This velocity for lerp,
         return this.destination;
@@ -283,6 +375,10 @@ public class Zombie extends EnemyAbstract {
     public void kill() {
         super.kill();
 
-        this.lastMovedBlock.remove(this);
+        for (Set<Entity> lastUpdateChunkSet : this.lastUpdateChunks) {
+            lastUpdateChunkSet.remove(this);
+        }
+
+        this.lastUpdateChunks.clear();
     }
 }

@@ -4,6 +4,7 @@ import com.mygdx.zombieland.entity.DamageSource;
 import com.mygdx.zombieland.entity.Damageable;
 import com.mygdx.zombieland.entity.Entity;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Set;
 
@@ -14,7 +15,7 @@ public class DamageEntityOnShootRunnable implements Runnable {
     private final LinkedList<Entity> entities;
 
 
-    public DamageEntityOnShootRunnable(DamageSource source, float amount, Set<Entity> entities) {
+    public DamageEntityOnShootRunnable(DamageSource source, float amount, Collection<Entity> entities) {
         this.source = source;
         this.amount = amount;
         this.entities = new LinkedList<>(entities);
