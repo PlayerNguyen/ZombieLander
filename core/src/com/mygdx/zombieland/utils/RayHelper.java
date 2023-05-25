@@ -32,14 +32,9 @@ public class RayHelper {
         return entities;
     }
 
-    public static Collection<Entity> rayMap(final MapRenderer<Entity> entitiesMap,
-                                                        final Location start,
-                                                        final Location end) {
-        System.out.printf("start = " + start);
-        System.out.printf("; end = " + end);
-        System.out.printf("; distance = " + end.distance(start));
-        System.out.println();
-
+    public static Collection<Entity> rayMap(final FastMatrix<Set<Entity>> entitiesMap,
+                                            final Location start,
+                                            final Location end) {
         Collection<Entity> resultEntities = new HashSet<>();
         Location tempPosition = new Location(start);
         Vector2D opposite = new Vector2D(end.x - start.x, end.y - start.y);
@@ -57,9 +52,11 @@ public class RayHelper {
                 break;
             }
             // Any strike will catch all entities from current location
-            System.out.println("x, y = "+(int)tempPosition.x + " " + (int)tempPosition.y);
+//            System.out.println("x, y = "+(int)tempPosition.x + " " + (int)tempPosition.y);
             Set<Entity> entities = entitiesMap.get((int) tempPosition.x, (int) tempPosition.y);
-            resultEntities.addAll(entities);
+            if (entities != null) {
+                resultEntities.addAll(entities);
+            }
         }
         return resultEntities;
     }
