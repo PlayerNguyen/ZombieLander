@@ -223,8 +223,8 @@ public class Zombie extends EnemyAbstract {
     }
     int i = 0;
     public void pathFinder(Location start, Location end) {
-        System.out.println("start = " + start);
-        System.out.println("end = " + end);
+//        System.out.println("start = " + start);
+//        System.out.println("end = " + end);
         boolean[][] visited = new boolean[801][601];
         for (int x = 0; x < visited.length; x++) {
             for (int y = 0; y < visited[i].length; y++) {
@@ -232,8 +232,10 @@ public class Zombie extends EnemyAbstract {
             }
         }
         int[][] min = new int[801][601];
+        Vector2D[][] path = new Vector2D[801][601];
         int[] dr = new int[]{-1, 1, 0, 0};
         int[] dc = new int[]{0, 0, 1, -1};
+
 
         Queue<CoordinateHelper.Coordinate> cq = new ArrayDeque<>();
         cq.add(new CoordinateHelper.Coordinate(start));
@@ -245,8 +247,7 @@ public class Zombie extends EnemyAbstract {
                 VisualizeHelper.simulateCircle(this.getWorld(), new Location(curCoordinate.x, curCoordinate.y), 1F);
             }
             if (curCoordinate.x == end.x && curCoordinate.y == end.y) {
-                System.out.println("Found target at " + end.x + ", " + end.y);
-                return;
+                break;
             }
 
             for (int i = 0; i < 4; i++) {
@@ -263,21 +264,34 @@ public class Zombie extends EnemyAbstract {
                 if (!visited[x][y]) {
                     min[x][y] = min[(int) curCoordinate.x][(int) curCoordinate.y] + 1;
                     visited[x][y] = true;
+                    path[x][y] = new Vector2D(dr[i], dc[i]);
                     cq.add(new CoordinateHelper.Coordinate(x, y));
                 }
             }
         }
+        Location endLocation = new Location(end.x, end.y);
+        Location startLocation = new Location(start.x, start.y);
+        Vector2D direction = new Vector2D(0, 0);
 
-        for (int k = 0; k < visited.length; k++) {
-            boolean[] booleans = visited[k];
-            for (int j = 0; j < booleans.length; j++) {
-                boolean aBoolean = booleans[j];
-
-                if (aBoolean) {
-                    VisualizeHelper.simulateCircle(this.getWorld(), new Location(k, j), 15F);
-                }
-            }
+        while(startLocation.x != endLocation.x || startLocation.y != endLocation.y) {
+            Vector2D vector2D = path[(int) endLocation.x][(int) endLocation.y];
+            endLocation.set((float) (endLocation.x - vector2D.x), (float) (endLocation.y - vector2D.y));
+            direction.set(vector2D.x, vector2D.y);
         }
+        System.out.println("direction" + direction);
+
+
+
+//        for (int k = 0; k < visited.length; k++) {
+//            boolean[] booleans = visited[k];
+//            for (int j = 0; j < booleans.length; j++) {
+//                boolean aBoolean = booleans[j];
+//
+//                if (aBoolean) {
+//                    VisualizeHelper.simulateCircle(this.getWorld(), new Location(k, j), 15F);
+//                }
+//            }
+//        }
     }
 
     private boolean allowMove(CoordinateHelper.Coordinate coordinate) {
