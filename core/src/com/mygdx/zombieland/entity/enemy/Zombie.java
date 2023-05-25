@@ -233,8 +233,8 @@ public class Zombie extends EnemyAbstract {
         }
         int[][] min = new int[801][601];
         Vector2D[][] path = new Vector2D[801][601];
-        int[] dr = new int[]{-1, 1, 0, 0};
-        int[] dc = new int[]{0, 0, 1, -1};
+        int[] dr = new int[]{0, 0, 1, -1};
+        int[] dc = new int[]{1, -1, 0, 0};
 
 
         Queue<CoordinateHelper.Coordinate> cq = new ArrayDeque<>();
@@ -274,9 +274,9 @@ public class Zombie extends EnemyAbstract {
         Vector2D direction = new Vector2D(0, 0);
 
         while(startLocation.x != endLocation.x || startLocation.y != endLocation.y) {
-            Vector2D vector2D = path[(int) endLocation.x][(int) endLocation.y];
-            endLocation.set((float) (endLocation.x - vector2D.x), (float) (endLocation.y - vector2D.y));
+            Vector2D vector2D = path[Math.round(endLocation.x)][Math.round(endLocation.y)];
             direction.set(vector2D.x, vector2D.y);
+            endLocation.set((float) (endLocation.x - vector2D.x), (float) (endLocation.y - vector2D.y));
         }
         System.out.println("direction" + direction);
 
