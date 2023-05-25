@@ -175,23 +175,43 @@ public class Player extends DamageableAbstract
     }
 
     public void moveUp(){
-        Vector2D v = new Vector2D(0,2);
+        if(this.location.y > 572){
+            this.location.y = 572;
+        }else{
+            Vector2D v = new Vector2D(0,2);
 
-        this.location.add(v);
+            this.location.add(v);
+        }
+
     }
     public void moveDown(){
-        Vector2D v = new Vector2D(0,-2);
-        this.location.add(v);
+        if(this.location.y < 28){
+            this.location.y = 28;
+        }else{
+            Vector2D v = new Vector2D(0,-2);
+            this.location.add(v);
+        }
+
     }
 
     public void moveLeft(){
-        Vector2D v = new Vector2D(-2,0);
-        this.location.add(v);
+        if(this.location.x < 28){
+            this.location.x = 28;
+        }else{
+            Vector2D v = new Vector2D(-2,0);
+            this.location.add(v);
+        }
+
     }
 
     public void moveRight(){
-        Vector2D v = new Vector2D(2,0);
-        this.location.add(v);
+        if(this.location.x > 772){
+            this.location.x = 772;
+        }else{
+            Vector2D v = new Vector2D(2,0);
+            this.location.add(v);
+        }
+
     }
 
     @Override
