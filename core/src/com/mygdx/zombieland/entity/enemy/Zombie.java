@@ -160,7 +160,7 @@ public class Zombie extends EnemyAbstract {
         if (degrees >= 180 && degrees < 270) {
             return Direction.BOTTOM_LEFT;
         }
-
+      
         return Direction.BOTTOM_RIGHT;
     }
 
