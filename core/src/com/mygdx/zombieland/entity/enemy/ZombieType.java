@@ -5,6 +5,11 @@ import com.badlogic.gdx.graphics.Texture;
 
 public enum ZombieType {
 
+//    ZOMBIE(2.3F, 0, 23.5999F, "zombie1"),
+//    DOCTOR_ZOMBIE(3.5F, 0, 30F, "zombie2"),
+//    MUTANT_ZOMBIE(7.2F, 0, 50F, "zombie3"),
+//    STARVE_ZOMBIE(2.0F, 0, 15F, "zombie4");
+
     ZOMBIE(2.3F, 50F, 23.5999F, "zombie1"),
     DOCTOR_ZOMBIE(3.5F, 50F, 30F, "zombie2"),
     MUTANT_ZOMBIE(7.2F, 50F, 50F, "zombie3"),
