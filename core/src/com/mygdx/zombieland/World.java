@@ -148,7 +148,6 @@ public class World implements Renderable {
 
     @Override
     public void render() {
-        System.out.println(this.projectiles.size());
 
         // Update camera
         this.camera.update();
