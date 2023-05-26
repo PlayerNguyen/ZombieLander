@@ -166,8 +166,6 @@ public class HUD implements Renderable {
             this.world.font.draw(this.world.getBatch(), String.format("%sx", currentHandGun.getAmmo()), 800 - (32 * 7), 64, 100, Align.center, true);
         }
 
-
-
 //        InventoryItem currentHandItem = this.world.getPlayer().getCurrentHandItem();
 //        if (currentHandItem instanceof InventoryGun) {
 //
