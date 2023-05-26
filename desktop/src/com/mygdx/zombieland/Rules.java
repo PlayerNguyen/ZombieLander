@@ -12,9 +12,11 @@ public final class Rules {
     private static Rules instance;
     private static final int FRAME_WIDTH = 1066;
     private static final int FRAME_HEIGHT = 630;
-    private final JFrame gameFrame =  new JFrame();
-    private final int RETURN_BUTTON_X = 600;
-    private final int RETURN_BUTTON_Y = 300;
+    private static final JFrame gameFrame =  new JFrame();
+    private final int RETURN_BUTTON_X = 333;
+    private final int RETURN_BUTTON_Y = 500;
+    private final Menu menu = Menu.getInstance();
+    private static final WindowLocation windowLocation = WindowLocation.getInstance();
 
     private Rules(){
         gameFrame.setLayout(null);
@@ -43,13 +45,13 @@ public final class Rules {
             }
         });
 
-        returnButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                instance.setGameFrameVisible(false);
-                Menu menu = Menu.getInstance();
-                menu.setGameFrameVisible(true);
-            }
+
+
+        returnButton.addActionListener(e -> {
+            instance.setGameFrameVisible(false);
+            menu.setGameFrameVisible(true);
+            windowLocation.setX(gameFrame.getX());
+            windowLocation.setY(gameFrame.getY());
         });
 
         gameFrame.add(returnButton);
@@ -60,10 +62,13 @@ public final class Rules {
 
         Container c = gameFrame.getContentPane();
         JLabel label = new JLabel();
-        label.setIcon(new ImageIcon("assets/Menu/background.png"));
+        label.setIcon(new ImageIcon("assets/Menu/rules.png"));
         Dimension size = label.getPreferredSize();
         label.setBounds(0, 0, size.width, size.height);
         c.add(label);
+
+        gameFrame.setLocation(windowLocation.getX(), windowLocation.getY());
+
         gameFrame.setVisible(true);
         gameFrame.setResizable(false);
     }
@@ -73,13 +78,15 @@ public final class Rules {
             instance = new Rules();
         }
         else{
+            gameFrame.setLocation(windowLocation.getX(), windowLocation.getY());
             instance.setGameFrameVisible(true);
         }
         return instance;
     }
 
     public void setGameFrameVisible(boolean state){
-        this.gameFrame.setVisible(state);
+        gameFrame.setLocation(windowLocation.getX(), windowLocation.getY());
+        gameFrame.setVisible(state);
     }
 
 }

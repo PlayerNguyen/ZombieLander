@@ -21,7 +21,7 @@ public final class Menu {
     private final int RULES_BUTTON_Y = 300;
     private final int SETTING_BUTTON_X = 600;
     private final int SETTING_BUTTON_Y = 400;
-
+    private final WindowLocation windowLocation = WindowLocation.getInstance();
     private Menu(){
         gameFrame.setLayout(null);
         gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -118,6 +118,8 @@ public final class Menu {
             }
         });
 
+
+
         startButton.addActionListener(new StartButtonListener());
 
         quitButton.addActionListener(e -> System.exit(0));
@@ -125,11 +127,15 @@ public final class Menu {
         rulesButton.addActionListener(e -> {
             Rules.getInstance();
             instance.setGameFrameVisible(false);
+            windowLocation.setX(gameFrame.getX());
+            windowLocation.setX(gameFrame.getY());
         });
 
         settingButton.addActionListener(e->{
             Setting.getInstance();
             instance.setGameFrameVisible(false);
+            windowLocation.setX(gameFrame.getX());
+            windowLocation.setX(gameFrame.getY());
         });
         gameFrame.add(startButton);
         gameFrame.add(quitButton);
@@ -140,10 +146,14 @@ public final class Menu {
 
         Container c = gameFrame.getContentPane();
         JLabel label = new JLabel();
-        label.setIcon(new ImageIcon("assets/Menu/background.png"));
+        label.setIcon(new ImageIcon("assets/Menu/background.jpg"));
         Dimension size = label.getPreferredSize();
         label.setBounds(0, 0, size.width, size.height);
         c.add(label);
+
+
+
+        gameFrame.setLocation(windowLocation.getX(), windowLocation.getY());
         gameFrame.setVisible(true);
         gameFrame.setResizable(false);
     }
@@ -167,7 +177,16 @@ public final class Menu {
     }
 
     public void setGameFrameVisible(boolean state){
+        gameFrame.setLocation(windowLocation.getX(), windowLocation.getY());
         this.gameFrame.setVisible(state);
+    }
+
+    public int getFrameLocationX(){
+        return gameFrame.getX();
+    }
+
+    public int getFrameLocationY(){
+        return gameFrame.getY();
     }
 
 }
