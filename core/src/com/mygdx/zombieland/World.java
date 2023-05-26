@@ -3,6 +3,7 @@ package com.mygdx.zombieland;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -48,7 +49,7 @@ public class World implements Renderable {
     public static final int WINDOW_HEIGHT = 600;
     private static final Texture BACKGROUND_TEXTURE = new Texture(Gdx.files.internal("background.png"));
     private static final Texture LOGO_TEXTURE = new Texture(Gdx.files.internal("logo.png"));
-    //    private static final Music BGM_SOUND = Gdx.audio.newMusic(Gdx.files.internal("audio/BGM.mp3"));
+    private static final Music BGM_SOUND = Gdx.audio.newMusic(Gdx.files.internal("audio/BGM.mp3"));
 
     private static boolean isMoveUp = false;
 
@@ -136,8 +137,8 @@ public class World implements Renderable {
 
 
         // Box spawner
-        this.spawners.add(new BoxSpawner(this, new Location(this.getPlayer().getLocation()),
-                120f, 12000));
+//        this.spawners.add(new BoxSpawner(this, new Location(this.getPlayer().getLocation()),
+//                120f, 12000));
         for (Spawner spawner : this.spawners) {
             spawner.create();
         }
@@ -145,9 +146,9 @@ public class World implements Renderable {
         // HUD initialization
         this.hud.create();
 
-//        BGM_SOUND.setLooping(true);
-//        BGM_SOUND.setVolume(this.getGameSetting().getMusicSoundLevel());
-//        BGM_SOUND.play();
+        BGM_SOUND.setLooping(true);
+        BGM_SOUND.setVolume(this.getGameSetting().getMusicSoundLevel());
+        BGM_SOUND.play();
     }
 
     @Override
@@ -271,16 +272,16 @@ public class World implements Renderable {
                 if (isMoveLeft) player.moveLeft();
                 if (isMoveRight) player.moveRight();
 
-                // Music pause
-//                if (this.getGameState() == PAUSING && BGM_SOUND.isPlaying()) {
-//                    BGM_SOUND.pause();
-//                }
-//
-//                if (this.getGameState() == PLAYING && !BGM_SOUND.isPlaying()) {
-//                    BGM_SOUND.play();
-//                }
+//                 Music pause
+                if (this.getGameState() == PAUSING && BGM_SOUND.isPlaying()) {
+                    BGM_SOUND.pause();
+                }
 
-                // Esc to pause
+                if (this.getGameState() == PLAYING && !BGM_SOUND.isPlaying()) {
+                    BGM_SOUND.play();
+                }
+
+//                 Esc to pause
                 Gdx.input.setInputProcessor(new InputProcessor() {
                     @Override
                     public boolean keyDown(int keycode) {
