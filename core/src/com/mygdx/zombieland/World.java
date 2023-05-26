@@ -125,22 +125,18 @@ public class World implements Renderable {
         // Load spawners
         // Zombie spawner
 //        this.spawners.clear();
-//                this.spawners.add(new ZombieSpawner(this,
-//                new Location(15, 300), 80f, 5000));
 //        this.spawners.add(new ZombieSpawner(this,
-//                new Location(15, 300), 80f, 5000));
+//                new Location(this.player.getLocation().x - 300, this.player.getLocation().y), 0, 5000));
 //        this.spawners.add(new ZombieSpawner(this,
-//                new Location(15, 300), 80f, 5000));
-//        this.spawners.add(new ZombieSpawner(this,
-//                new Location(60, 300), 80f, 2000));
+//                new Location(this.player.getLocation().x, this.player.getLocation().y + 300), 0, 5000));
+        Zombie entity1 = (Zombie) createEntity(new Zombie(this, new Location(this.getPlayer().getLocation().x - 300, this.getPlayer().getLocation().y), this.player, ZombieType.ZOMBIE));
+        entity1.setHealth(99999);
+        Zombie entity2 = (Zombie) createEntity(new Zombie(this, new Location(this.getPlayer().getLocation().x , this.getPlayer().getLocation().y + 200), this.player, ZombieType.ZOMBIE));
+        entity2.setHealth(99999);
 
-        this.spawners.add(new ZombieSpawner(this,
-                new Location(this.player.getLocation().x - 300, this.player.getLocation().y), 0, 5000));
-        this.spawners.add(new ZombieSpawner(this,
-                new Location(this.player.getLocation().x, this.player.getLocation().y + 300), 0, 5000));
-        // Box spawner
-        this.spawners.add(new BoxSpawner(this, new Location(this.getPlayer().getLocation()),
-                120f, 12000));
+        // Box spawner, spaw amunition box
+//        this.spawners.add(new BoxSpawner(this, new Location(this.getPlayer().getLocation()),
+//                120f, 12000));
 
         for (Spawner spawner : this.spawners) {
             spawner.create();

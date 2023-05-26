@@ -72,24 +72,21 @@ public class Zombie extends EnemyAbstract {
 //        this.getSprite().setTexture(ZOMBIE_TEXTURE);
         this.getSprite().setSize(ZOMBIE_SIZE, ZOMBIE_SIZE);
         this.getSprite().setOrigin((float) ZOMBIE_SIZE / 2, (float) ZOMBIE_SIZE / 2);
-
-        this.rotateToTarget();
         this.updateMove();
     }
 
     @Override
     public void render() {
-
-
-
         // Export (render) image
         this.getSprite().setRotation(this.getRotation());
         this.getSprite().setPosition(this.getLocation().x - 32, this.getLocation().y - 32);
         this.getSprite().draw(world.getBatch());
 
+        // update move ================================================================================================================================
         if (this.world.getGameState().equals(GameState.PLAYING)) {
             this.updateMove();
         }
+        // =============================================================================================================================================
 
         // Clear old position values
         for (Set<Entity> lastUpdateChunkSet : this.lastUpdateChunks) {
@@ -98,7 +95,6 @@ public class Zombie extends EnemyAbstract {
            }
         }
         this.lastUpdateChunks.clear();
-
         // Put the zombie onto the map
         this.lastUpdateChunks.addAll(this.getWorld().updateEntityMaskPosition(this));
 
@@ -111,40 +107,9 @@ public class Zombie extends EnemyAbstract {
             // Draw visited predict to target nodes
             VisualizeHelper.drawFastMatrix(this.getWorld(), this.paths, ZOMBIE_DEBUG_MAP_DENSITY, 1F, Color.YELLOW);
         }
-
-        if(this.isCollidedFence(this.getLocation()))    {
-            int[] xMap = new int[]{};
-            int[] yMap = new int[]{};
-            xMap = new int[]{0, 0, 1, 1, 1, -1, -1, -1};
-            yMap = new int[]{1, -1, 0, 1, -1, 0, 1, -1};
-            for (int i = 0; i < 8; i++) {
-                if (!this.isCollidedFence(new Location(
-                                                    this.getLocation().x + xMap[i] * speed * Gdx.graphics.getDeltaTime(),
-                                                    this.getLocation().y + yMap[i] * speed * Gdx.graphics.getDeltaTime()
-                                                    ))){
-                    this.translate(xMap[i] * speed * Gdx.graphics.getDeltaTime(),
-                                      yMap[i] * speed * Gdx.graphics.getDeltaTime());
-                    return;
-                }
-            }
-            System.out.println("no way out");
-            return;
-        }
-        else if (System.currentTimeMillis() - lastPathUpdate > ZOMBIE_PATH_UPDATE_DURATION) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    findTarget(
-                                new Location(Math.round(getLocation().x), Math.round(getLocation().y)),
-                                new Location(Math.round(target.getLocation().x), Math.round(target.getLocation().y))
-                              );
-                }
-            }).start();
-            this.lastPathUpdate = System.currentTimeMillis();
-        }
-        this.translate((float) this.getDirection().x * speed * Gdx.graphics.getDeltaTime(), (float) this.getDirection().y * speed * Gdx.graphics.getDeltaTime());
-        rotateToTarget();
     }
+
+
 
     static enum Direction {
         TOP_LEFT, BOTTOM_LEFT, TOP_RIGHT, BOTTOM_RIGHT
@@ -175,51 +140,23 @@ public class Zombie extends EnemyAbstract {
         // bfs
 
         this.paths.clear();
-        Direction predictDirection = predictDirection(start, end);
-
         Queue<CoordinateHelper.Coordinate> cq = new ArrayDeque<>();
         cq.add(new CoordinateHelper.Coordinate(start));
         this.paths.set(Math.round(start.x), Math.round(start.y), new Vector2D(0, 0));
+        boolean ok= false;
 
         while (!cq.isEmpty()) {
             CoordinateHelper.Coordinate curCoordinate = cq.poll();
-            curCoordinate= new CoordinateHelper.Coordinate(Math.round(curCoordinate.x), Math.round(curCoordinate.y));
+            curCoordinate = new CoordinateHelper.Coordinate(Math.round(curCoordinate.x), Math.round(curCoordinate.y));
 
             if (Math.abs(curCoordinate.x - end.x) < 1 && Math.abs(curCoordinate.y - end.y) < 1){
+                ok = true;
                 break;
             }
             if (new Location(curCoordinate.x, curCoordinate.y).distance(end) < 1) break;
 
-            int[] xMap = new int[]{};
-            int[] yMap = new int[]{};
-            xMap = new int[]{0, 0, 1, 1, 1, -1, -1, -1};
-            yMap = new int[]{1, -1, 0, 1, -1, 0, 1, -1};
-//            switch (predictDirection) {
-//                case TOP_RIGHT: {
-//
-//                    break;
-//                }
-//                case TOP_LEFT: {
-//                    xMap = new int[]{0, 0, 1, 1, 1, -1, -1, -1};
-//                    yMap = new int[]{1, -1, 0, 1, -1, 0, 1, -1};
-//                    break;
-//                }
-//                case BOTTOM_LEFT: {
-//                    xMap = new int[]{0, 0, 1, 1, 1, -1, -1, -1};
-//                    yMap = new int[]{1, -1, 0, 1, -1, 0, 1, -1};
-//                    break;
-//                }
-//                case BOTTOM_RIGHT: {
-//                    xMap = new int[]{0, 0, 1, 1, 1, -1, -1, -1};
-//                    yMap = new int[]{1, -1, 0, 1, -1, 0, 1, -1};
-//                    break;
-//                }
-//                default: {
-//                    xMap = new int[]{0, 0, 1, 1, 1, -1, -1, -1};
-//                    yMap = new int[]{1, -1, 0, 1, -1, 0, 1, -1};
-//                    break;
-//                }
-//            }
+            int[] xMap = new int[]{0, 0, 1, 1, 1, -1, -1, -1};
+            int[] yMap = new int[]{1, -1, 0, 1, -1, 0, 1, -1};
 
             for (int i = 0; i < xMap.length; i++) {
                 int x = Math.round(curCoordinate.x + xMap[i] * speed * Gdx.graphics.getDeltaTime());
@@ -232,6 +169,7 @@ public class Zombie extends EnemyAbstract {
                 if (!allowMove(new CoordinateHelper.Coordinate(x, y))) {
                     continue;
                 }
+
                 // collided fence
                 if (isCollidedFence(new Location(x, y))) {
                     continue;
@@ -245,7 +183,7 @@ public class Zombie extends EnemyAbstract {
             }
         }
 
-        // backtracking find path
+        // backtracking find path =========================================================================================================
         Location startLocation= new Location(start);
         Location endLocation = new Location(end);
 
@@ -257,23 +195,40 @@ public class Zombie extends EnemyAbstract {
             minVector.set(vec.x, vec.y);
         }
         if(minVector.x ==0 && minVector.y ==0)  {
-            System.out.println("random");
+            if(ok){
+                System.out.println("bad logic");
+            }
+//            System.out.println("random");
             minVector = new Vector2D(Math.random() * 2 -1,Math.random()*2 -1);
+            rotateToTarget();
         }
-        this.getDirection().set(minVector.x, minVector.y);
+        else this.getDirection().set(minVector.x, minVector.y);
     }
 
 
-    private boolean isCollidedFence(Location pos){
-        Rectangle rec = new Rectangle((int) (pos.x- this.getSize()/2), (int) (pos.y + this.getSize()/2), this.getSize(), this.getSize());
+    private boolean isCollidedFence(Location pos) {
+        Rectangle rec = new Rectangle(
+                (int) (pos.x - this.getSize() / 2),
+                (int) (pos.y - this.getSize() / 2),
+                this.getSize(),
+                this.getSize()
+        );
+
         for (Entity entity : this.world.getEntities()) {
             if (entity instanceof Fence) {
-                Rectangle rectangle = new Rectangle((int) entity.getLocation().x - entity.getSize()/2 , (int) (entity.getLocation().y + entity.getSize()/2), entity.getSize(), entity.getSize());
+                Rectangle rectangle = new Rectangle(
+                        (int) entity.getLocation().x - entity.getSize() / 2,
+                        (int) entity.getLocation().y - entity.getSize() / 2,
+                        entity.getSize(),
+                        entity.getSize()
+                );
+
                 if (rec.intersects(rectangle)) {
                     return true;
                 }
             }
         }
+
         return false;
     }
 
@@ -308,20 +263,69 @@ public class Zombie extends EnemyAbstract {
         this.destination = new Location(moveTo.x, moveTo.y);
         // This velocity for lerp,
         return this.destination;
-
     }
 
     private void updateMove() {
-        // Set direction to the target
+        updateDirection();
+        // Update speed
+        this.setSpeed(this.getType().getSpeed());
+        updateLocation();
+        updateHitBox();
+    }
+
+    private void updateDirection(){
+        // Update rotation to target
+        this.rotateToTarget();
+//        Set direction to the target
 //        this.getDirection().x = Math.cos(Math.toRadians(this.getRotation()));
 //        this.getDirection().y = Math.sin(Math.toRadians(this.getRotation()));
 
-        // Update rotation to target
-        this.rotateToTarget();
+        if(this.isCollidedFence(this.getLocation()))    {
+            updateDirectionWhenCollision();
+        }
+        else updateDirectionUsingBFS();
+    }
 
-        // Update speed
-        this.setSpeed(this.getType().getSpeed());
+    private void updateDirectionWhenCollision(){
+    //  try to find a way out of the fence
+        int[] xMap = new int[]{};
+        int[] yMap = new int[]{};
+        xMap = new int[]{0, 0, 1, 1, 1, -1, -1, -1};
+        yMap = new int[]{1, -1, 0, 1, -1, 0, 1, -1};
+        for (int i = 0; i < 8; i++) {
+            if (!this.isCollidedFence(new Location(
+                    this.getLocation().x + xMap[i] * speed  ,
+                    this.getLocation().y + yMap[i] * speed
+            ))){
+                this.getDirection().set(xMap[i], yMap[i]);
+                return;
+            }
+        }
+        System.out.println("collision and no way out");
+    }
 
+    private void updateDirectionUsingBFS(){
+        if (System.currentTimeMillis() - lastPathUpdate > ZOMBIE_PATH_UPDATE_DURATION) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    // bfs to find path
+                    findTarget(
+                            new Location(Math.round(getLocation().x), Math.round(getLocation().y)),
+                            new Location(Math.round(target.getLocation().x), Math.round(target.getLocation().y))
+                    );
+                }
+            }).start();
+            this.lastPathUpdate = System.currentTimeMillis();
+        }
+    }
+
+    private void updateLocation(){
+        this.translate((float) (this.getDirection().x * this.getSpeed() * Gdx.graphics.getDeltaTime()),
+                (float) (this.getDirection().y * this.getSpeed() * Gdx.graphics.getDeltaTime()));
+    }
+
+    private void updateHitBox(){
         // Hit player when get close
         if (this.target.getLocation().distance(this.getLocation()) <= (float) this.target.getSize() / 2) {
             if (System.currentTimeMillis() - ZOMBIE_HIT_DURATION >= lastHit || lastHit == 0) {
