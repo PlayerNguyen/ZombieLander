@@ -11,9 +11,9 @@ public final class Setting {
     private static Setting instance;
     private static final int FRAME_WIDTH = 1066;
     private static final int FRAME_HEIGHT = 630;
-    private final JFrame gameFrame =  new JFrame();
-    private final int RETURN_BUTTON_X = 600;
-    private final int RETURN_BUTTON_Y = 300;
+    private static final JFrame gameFrame =  new JFrame();
+    private final int RETURN_BUTTON_X = 333;
+    private final int RETURN_BUTTON_Y = 500;
 
     private Setting(){
         gameFrame.setLayout(null);
@@ -54,10 +54,18 @@ public final class Setting {
 
         Container c = gameFrame.getContentPane();
         JLabel label = new JLabel();
-        label.setIcon(new ImageIcon("assets/Menu/background.png"));
+        label.setIcon(new ImageIcon("assets/Menu/setting.jpg"));
         Dimension size = label.getPreferredSize();
         label.setBounds(0, 0, size.width, size.height);
         c.add(label);
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        // Calculate the center position
+        int centerX = (screenSize.width - gameFrame.getWidth()) / 2;
+        int centerY = (screenSize.height - gameFrame.getHeight()) / 2;
+        gameFrame.setLocation(centerX, centerY);
+
         gameFrame.setVisible(true);
         gameFrame.setResizable(false);
     }
@@ -73,7 +81,7 @@ public final class Setting {
     }
 
     public void setGameFrameVisible(boolean state){
-        this.gameFrame.setVisible(state);
+        gameFrame.setVisible(state);
     }
 
 }
