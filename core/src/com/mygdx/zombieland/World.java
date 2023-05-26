@@ -29,6 +29,7 @@ import com.mygdx.zombieland.scheduler.Scheduler;
 import com.mygdx.zombieland.setting.GameSetting;
 import com.mygdx.zombieland.spawner.BoxSpawner;
 import com.mygdx.zombieland.spawner.Spawner;
+import com.mygdx.zombieland.spawner.ZombieSpawner;
 import com.mygdx.zombieland.state.GameState;
 import com.mygdx.zombieland.utils.EntityMask;
 import com.mygdx.zombieland.utils.FastMatrix;
@@ -122,18 +123,17 @@ public class World implements Renderable {
 
         // Load spawners
         // Zombie spawner
-//        this.spawners.clear();
-//                this.spawners.add(new ZombieSpawner(this,
-//                new Location(15, 300), 80f, 5000));
-//        this.spawners.add(new ZombieSpawner(this,
-//                new Location(15, 300), 80f, 5000));
+        this.spawners.clear();
+                this.spawners.add(new ZombieSpawner(this,
+                new Location(15, 300), 0, 2500));
+        this.spawners.add(new ZombieSpawner(this,
+                new Location(15, 300), 0, 2500));
 //        this.spawners.add(new ZombieSpawner(this,
 //                new Location(15, 300), 80f, 5000));
 //        this.spawners.add(new ZombieSpawner(this,
 //                new Location(60, 300), 80f, 2000));
 
-        Zombie entity = (Zombie) createEntity(new Zombie(this, new Location(300, 300), this.player, ZombieType.ZOMBIE));
-        entity.setHealth(99999);
+
         // Box spawner
         this.spawners.add(new BoxSpawner(this, new Location(this.getPlayer().getLocation()),
                 120f, 12000));
