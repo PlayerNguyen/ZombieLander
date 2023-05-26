@@ -132,7 +132,6 @@ public class Zombie extends EnemyAbstract {
         if (degrees >= 180 && degrees < 270) {
             return Direction.BOTTOM_LEFT;
         }
-      
         return Direction.BOTTOM_RIGHT;
     }
 
@@ -288,11 +287,36 @@ public class Zombie extends EnemyAbstract {
 
     private void updateDirectionWhenCollision(){
     //  try to find a way out of the fence
+        Direction predictDirection = predictDirection(this.getLocation(), this.target.getLocation());
+
         int[] xMap = new int[]{};
         int[] yMap = new int[]{};
-        xMap = new int[]{0, 0, 1, 1, 1, -1, -1, -1};
-        yMap = new int[]{1, -1, 0, 1, -1, 0, 1, -1};
-        for (int i = 0; i < 8; i++) {
+        switch (predictDirection) {
+            case TOP_RIGHT: {
+                xMap = new int[]{1, 0, 1};
+                yMap = new int[]{0, 1, 1};
+                break;
+            }
+            case TOP_LEFT: {
+                xMap = new int[]{-1, 0, -1};
+                yMap = new int[]{0, 1, 1};
+                break;
+            }
+            case BOTTOM_LEFT: {
+                xMap = new int[]{-1, 0, -1};
+                yMap = new int[]{0, -1, -1};
+                break;
+            }
+            case BOTTOM_RIGHT: {
+                xMap = new int[]{0, 1, 1};
+                yMap = new int[]{-1, 0, -1};
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+        for (int i = 0; i < xMap.length; i++) {
             if (!this.isCollidedFence(new Location(
                     this.getLocation().x + xMap[i] * speed  ,
                     this.getLocation().y + yMap[i] * speed

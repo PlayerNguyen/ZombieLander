@@ -13,6 +13,8 @@ import com.mygdx.zombieland.World;
 import com.mygdx.zombieland.entity.projectile.PistolProjectile;
 import com.mygdx.zombieland.inventory.InventoryGun;
 import com.mygdx.zombieland.inventory.InventoryItem;
+import com.mygdx.zombieland.inventory.InventoryPistol;
+import com.mygdx.zombieland.inventory.InventoryRifle;
 import com.mygdx.zombieland.state.GameState;
 import com.mygdx.zombieland.weapon.Gun;
 import com.mygdx.zombieland.weapon.Weapon;
@@ -32,7 +34,7 @@ public class HUD implements Renderable {
 
     private Stage stage;
     private Table table;
-
+    Sprite bulletSprite;
     public HUD(World world) {
         this.world = world;
     }
@@ -159,12 +161,10 @@ public class HUD implements Renderable {
                 .getCurrentHandItem().getName()), 800 - (32 * 5), 64 + 18, 100, Align.center, true);
 
         InventoryItem currentHandItem = this.world.getPlayer().getCurrentHandItem();
-        if (currentHandItem instanceof InventoryGun) {
-
+        if (currentHandItem instanceof InventoryPistol) {
             InventoryGun currentHandGun = (InventoryGun) currentHandItem;
             Weapon weapon = currentHandGun.getWeapon();
             Gun gunWeapon = (Gun) weapon;
-
             if (this.bulletSprites.size() != gunWeapon.getMaxAmmo()) {
                 for (int i = 0; i < gunWeapon.getMaxAmmo(); i++) {
                     Sprite bullet = new Sprite(PistolProjectile.PISTOL_TEXTURE);
@@ -189,14 +189,47 @@ public class HUD implements Renderable {
             // Draw a bullet as iconic
             for (int i = 0, spritesSize = bulletSprites.size(); i < spritesSize; i++) {
 
-                Sprite bulletSprite = bulletSprites.get(i);
+                bulletSprite = bulletSprites.get(i);
                 if (i >= currentHandGun.getAmmo()) {
-                    bulletSprite.setColor(0, 0, 0, this.world.getGameSetting()
+                    bulletSprite.setColor(2, 2, 2, this.world.getGameSetting()
                             .getHudVisibleLevel());
                 }
-                bulletSprite.draw(this.world.batch);
+//                bulletSprite.draw(this.world.batch);
+            }
+        }
+        else if(currentHandItem instanceof InventoryRifle){
+            InventoryGun currentRifle = (InventoryGun) currentHandItem;
+            Weapon weapon = currentRifle.getWeapon();
+            Gun gunWeapon = (Gun) weapon;
+            if (this.bulletSprites.size() != gunWeapon.getMaxAmmo()) {
+                for (int i = 0; i < gunWeapon.getMaxAmmo(); i++) {
+                    Sprite bullet = new Sprite(PistolProjectile.PISTOL_TEXTURE);
+                    bullet.setSize(32, 32);
+                    bullet.setPosition(800 - (32 * 6), 32 + (4 * i));
+                    this.bulletSprites.add(bullet);
+
+                }
             }
 
+            this.world.font.draw(this.world.getBatch(),
+                    String.format("x %.0f",
+                            (Math.ceil((float) currentRifle.getTotalAmmo() / 30))
+                    ),
+                    800 - (32 * 5),
+                    64,
+                    100,
+                    Align.center,
+                    true);
+
+//             Draw a bullet as iconic
+            for (int i = 0, spritesSize = bulletSprites.size(); i < spritesSize; i++) {
+                bulletSprite = bulletSprites.get(i);
+                if (i >= currentRifle.getAmmo()) {
+                    bulletSprite.setColor(1, 1, 1, this.world.getGameSetting()
+                            .getHudVisibleLevel());
+                }
+//                bulletSprite.draw(this.world.batch);
+            }
         }
     }
 

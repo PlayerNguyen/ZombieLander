@@ -54,7 +54,7 @@ public class Player extends DamageableAbstract
         this.texture = TEXTURE_IDLING;
         this.canShoot = true;
 //        this.weapon = new Pistol(PistolType.PISTOL);
-        this.currentHandItem = world.getInventory().getItems().get(0);
+        this.currentHandItem = world.getInventory().getItems().get(1);
         this.reloading = false;
     }
 

@@ -109,8 +109,8 @@ public class World implements Renderable {
         this.player = new Player(this);
         this.player.create();
 
-        this.entities.add(new Fence(this, new Location(this.player.getLocation().x -200 , this.player.getLocation().y)));
-        this.entities.add(new Fence(this, new Location(this.player.getLocation().x , this.player.getLocation().y + 200)));
+        this.entities.add(new Fence(this, new Location(this.player.getLocation().x - 200 , this.player.getLocation().y)));
+        this.entities.add(new Fence(this, new Location(this.player.getLocation().x + 200 , this.player.getLocation().y)));
 
         // Load entities
         for (Entity entity : entities) {
@@ -124,15 +124,11 @@ public class World implements Renderable {
 
         // Load spawners
         // Zombie spawner
-//        this.spawners.clear();
-//        this.spawners.add(new ZombieSpawner(this,
-//                new Location(this.player.getLocation().x - 300, this.player.getLocation().y), 0, 5000));
-//        this.spawners.add(new ZombieSpawner(this,
-//                new Location(this.player.getLocation().x, this.player.getLocation().y + 300), 0, 5000));
-        Zombie entity1 = (Zombie) createEntity(new Zombie(this, new Location(this.getPlayer().getLocation().x - 300, this.getPlayer().getLocation().y), this.player, ZombieType.ZOMBIE));
-        entity1.setHealth(99999);
-        Zombie entity2 = (Zombie) createEntity(new Zombie(this, new Location(this.getPlayer().getLocation().x , this.getPlayer().getLocation().y + 200), this.player, ZombieType.ZOMBIE));
-        entity2.setHealth(99999);
+        this.spawners.clear();
+        this.spawners.add(new ZombieSpawner(this,
+                new Location(this.player.getLocation().x - 300, this.player.getLocation().y), 0, 5000));
+        this.spawners.add(new ZombieSpawner(this,
+                new Location(this.player.getLocation().x, this.player.getLocation().y + 300), 0, 5000));
 
         // Box spawner, spaw amunition box
 //        this.spawners.add(new BoxSpawner(this, new Location(this.getPlayer().getLocation()),
@@ -152,6 +148,8 @@ public class World implements Renderable {
 
     @Override
     public void render() {
+        System.out.println(this.projectiles.size());
+
         // Update camera
         this.camera.update();
 

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="013015ab-a626-4ce0-b0d8-e40701677242" name="Changes" comment="fix: zombie and find path and solve collision smother">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/mygdx/zombieland/World.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/mygdx/zombieland/World.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/mygdx/zombieland/entity/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/mygdx/zombieland/entity/Player.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/mygdx/zombieland/entity/enemy/Zombie.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/mygdx/zombieland/entity/enemy/Zombie.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/mygdx/zombieland/hud/HUD.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/mygdx/zombieland/hud/HUD.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/mygdx/zombieland/inventory/InventoryPistol.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/mygdx/zombieland/inventory/InventoryPistol.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/com/mygdx/zombieland/inventory/InventoryRifle.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/mygdx/zombieland/inventory/InventoryRifle.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="demo" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.10.0/126a80a5ef6d32683bc563d4015c6c163d690f15/gdx-1.10.0-sources.jar!/com/badlogic/gdx/graphics/g2d/Sprite.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://D:/Compilers/compile java/jdk-17.0.6/lib/src.zip!/java.desktop/java/awt/Rectangle.java" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2QCAVMI59tplEsyZa6aLxEPjJGu" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "feat/Duy-modify-bfs",
+    "jdk.selected.JAVA_MODULE": "17",
+    "last_opened_file_path": "C:/Users/ADMIN/Desktop/New folder (2)/ZombieLander",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "preferences.editor",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.mygdx.zombieland.datastructure" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="DesktopLauncher" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.mygdx.zombieland.DesktopLauncher" />
+      <module name="ZombieLander.desktop.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.mygdx.zombieland.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.DesktopLauncher" />
+        <item itemvalue="Application.DesktopLauncher" />
+        <item itemvalue="Application.DesktopLauncher" />
+        <item itemvalue="Application.DesktopLauncher" />
+        <item itemvalue="Application.DesktopLauncher" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="013015ab-a626-4ce0-b0d8-e40701677242" name="Changes" comment="" />
+      <created>1684847213174</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1684847213174</updated>
+      <workItem from="1684847215994" duration="12877000" />
+      <workItem from="1684936935885" duration="18875000" />
+      <workItem from="1684987563063" duration="2995000" />
+      <workItem from="1685017513394" duration="22526000" />
+      <workItem from="1685081569439" duration="5070000" />
+      <workItem from="1685088763463" duration="3111000" />
+      <workItem from="1685103585618" duration="4816000" />
+    </task>
+    <task id="LOCAL-00001" summary="dont merge, i am fixing">
+      <created>1684868674203</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1684868674203</updated>
+    </task>
+    <task id="LOCAL-00002" summary="dont merge, i am fixing">
+      <created>1684868701005</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1684868701005</updated>
+    </task>
+    <task id="LOCAL-00003" summary="dont merge, i am fixing">
+      <created>1684955864342</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1684955864342</updated>
+    </task>
+    <task id="LOCAL-00004" summary="feature: After finding target, backtracking to trace the first direction for the zombie to move">
+      <created>1684988813467</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1684988813467</updated>
+    </task>
+    <task id="LOCAL-00005" summary="feature: fix fiding path">
+      <created>1684989279304</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1684989279304</updated>
+    </task>
+    <task id="LOCAL-00006" summary="feature: teleport version, will improve soon">
+      <created>1685017725257</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1685017725258</updated>
+    </task>
+    <task id="LOCAL-00007" summary="feature: complete bfs with 8 directions, sth random">
+      <created>1685036460264</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1685036460264</updated>
+    </task>
+    <task id="LOCAL-00008" summary="feature: fix a little bit in collision">
+      <created>1685042441522</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1685042441522</updated>
+    </task>
+    <task id="LOCAL-00009" summary="fix: zombie and find path and solve collision smother">
+      <created>1685085677786</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1685085677786</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="dont merge, i am fixing" />
+    <MESSAGE value="feature: After finding target, backtracking to trace the first direction for the zombie to move" />
+    <MESSAGE value="feature: fix fiding path" />
+    <MESSAGE value="feature: teleport version, will improve soon" />
+    <MESSAGE value="feature: complete bfs with 8 directions, sth random" />
+    <MESSAGE value="feature: fix a little bit in collision" />
+    <MESSAGE value="fix: zombie and find path and solve collision smother" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: zombie and find path and solve collision smother" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/ZombieLander$DesktopLauncher.ic" NAME="DesktopLauncher Coverage Results" MODIFIED="1684937458949" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>com.mygdx.zombieland.*</FILTER>
+    </SUITE>
+  </component>
+</project>

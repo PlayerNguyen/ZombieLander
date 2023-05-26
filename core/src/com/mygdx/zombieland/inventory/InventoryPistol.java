@@ -8,7 +8,7 @@ public class InventoryPistol extends AbstractInventoryGun {
 
     private String name;
     public InventoryPistol() {
-        super(Input.Keys.NUM_1, new Pistol(PistolType.PISTOL), 12*10, 12);
+        super(Input.Keys.NUM_1, new Pistol(PistolType.PISTOL), 12*100, 12);
         this.name = "Pistol";
     }
 

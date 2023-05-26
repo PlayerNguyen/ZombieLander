@@ -1,0 +1,69 @@
+<changelist name="Uncommitted_changes_before_Update_at_5_26_2023_7_29_PM_[Changes]1" date="1685104164900" recycled="true" deleted="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_26_2023_7_29_PM_[Changes]1/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Update at 5/26/2023 7:29 PM [Changes]" />
+  <binary>
+    <option name="BEFORE_PATH" value=".gradle/7.3.3/executionHistory/executionHistory.lock" />
+    <option name="AFTER_PATH" value=".gradle/7.3.3/executionHistory/executionHistory.lock" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_26_2023_7_29_PM_[Changes]1/executionHistory.lock" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="desktop/build/tmp/compileJava/previous-compilation-data.bin" />
+    <option name="AFTER_PATH" value="desktop/build/tmp/compileJava/previous-compilation-data.bin" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_26_2023_7_29_PM_[Changes]1/previous-compilation-data.bin" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/com/mygdx/zombieland/Renderable.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/com/mygdx/zombieland/Renderable.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_26_2023_7_29_PM_[Changes]1/Renderable.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value=".gradle/buildOutputCleanup/outputFiles.bin" />
+    <option name="AFTER_PATH" value=".gradle/buildOutputCleanup/outputFiles.bin" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_26_2023_7_29_PM_[Changes]1/outputFiles.bin" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value=".gradle/buildOutputCleanup/buildOutputCleanup.lock" />
+    <option name="AFTER_PATH" value=".gradle/buildOutputCleanup/buildOutputCleanup.lock" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_26_2023_7_29_PM_[Changes]1/buildOutputCleanup.lock" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value=".gradle/7.3.3/executionHistory/executionHistory.bin" />
+    <option name="AFTER_PATH" value=".gradle/7.3.3/executionHistory/executionHistory.bin" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_26_2023_7_29_PM_[Changes]1/executionHistory.bin" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="desktop/build/classes/java/main/com/mygdx/zombieland/DesktopLauncher.class" />
+    <option name="AFTER_PATH" value="desktop/build/classes/java/main/com/mygdx/zombieland/DesktopLauncher.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_26_2023_7_29_PM_[Changes]1/DesktopLauncher.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value=".gradle/7.3.3/fileHashes/resourceHashesCache.bin" />
+    <option name="AFTER_PATH" value=".gradle/7.3.3/fileHashes/resourceHashesCache.bin" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_26_2023_7_29_PM_[Changes]1/resourceHashesCache.bin" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value=".gradle/7.3.3/fileHashes/fileHashes.bin" />
+    <option name="AFTER_PATH" value=".gradle/7.3.3/fileHashes/fileHashes.bin" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_26_2023_7_29_PM_[Changes]1/fileHashes.bin" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/com/mygdx/zombieland/ZombieLandMain.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/com/mygdx/zombieland/ZombieLandMain.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_26_2023_7_29_PM_[Changes]1/ZombieLandMain.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value=".gradle/7.3.3/fileHashes/fileHashes.lock" />
+    <option name="AFTER_PATH" value=".gradle/7.3.3/fileHashes/fileHashes.lock" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_26_2023_7_29_PM_[Changes]1/fileHashes.lock" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/com/mygdx/zombieland/World.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/com/mygdx/zombieland/World.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_26_2023_7_29_PM_[Changes]1/World.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/libs/core-1.0.jar" />
+    <option name="AFTER_PATH" value="core/build/libs/core-1.0.jar" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_26_2023_7_29_PM_[Changes]1/core-1.0.jar" />
+  </binary>
+</changelist>
