@@ -142,7 +142,7 @@ public final class Menu {
 
         Container c = gameFrame.getContentPane();
         JLabel label = new JLabel();
-        label.setIcon(new ImageIcon("assets/Menu/background.jpg"));
+        label.setIcon(new ImageIcon("assets/Menu/background.png"));
         Dimension size = label.getPreferredSize();
         label.setBounds(0, 0, size.width, size.height);
         c.add(label);
