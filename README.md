@@ -82,17 +82,12 @@ _Our main motivation by choosing this game is to hope that we could finalize our
 
 | No  | Name                          | ID          | Main Contributes                                                                       | Contacts                                                                                                                                |
 |-----|-------------------------------|-------------|----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| 1   | **Nguyen Huynh Nguyen** 👨‍💻 | ITITIU20261 | Game Developer, Github repository host, Debug & fixing code, Tasks distributor.        | [Github](https://github.com/PlayerNguyen) [Facebook](https://www.facebook.com/Okura.Nguyen) [Email](mailto:nhnguyen.forwork@gmail.com)  |
-| 2   | **Duong Khanh Duy** 👨‍🎨    | ITITIU20259 | Game artist, Idea contributor, Quality Checker, Tasks Tracker.                         | [Github](https://github.com/TuanNghiep) [Facebook](https://www.facebook.com/nghiep.tuan.58) [Email](mailto:nghieptrantuan@gmail.com)    |
-| 3   | **Nguyen Trong Nghia**✍           | ITITIU20193 | Game designer, Script Writer, Thoughts & Ideas Gatherer, Game Sounds & Music composer. | [Github](https://github.com/Callmeserpent) [Facebook](https://www.facebook.com/callmeserpent) [Email](mailto:voduong.hcmiu@gmail.com) |
-| 4   | **Lam Quoc Dinh**✍           | ITITIU20193 | Game designer, Script Writer, Thoughts & Ideas Gatherer, Game Sounds & Music composer. | [Github](https://github.com/Callmeserpent) [Facebook](https://www.facebook.com/callmeserpent) [Email](mailto:voduong.hcmiu@gmail.com) |
+| 1   | **Nguyen Huynh Nguyen** 👨‍💻 | ITITIU20261 | Game Developer, Github repository host, Debug & fixing code, Tasks distributor.        | [Github](https://github.com/PlayerNguyen) |
+| 2   | **Duong Khanh Duy** 👨‍🎨    | ITITIU20194 | Algorithm suggestion, quality check, fix optimizing bug                         | [Github](https://github.com/kingstonduy)    |
+| 3   | **Nguyen Trong Nghia**✍           | ITITIU20257 | Player Movement and camera/shooting accurancy | [Github](https://github.com/nguyentrongnghia1702) |
+| 4   | **Lam Quoc Dinh**✍           | ITITIU20002 | Game designer menu, report and powerpoint author | [Github](https://github.com/Toxica20002)  |
+| 5   | **Nguyen Pham Diem Quynh**✍           | ITITIU20290 | Summarize idea and task in report and powerpoint |[Github](https://github.com/quynhnguyen2901)  |
 
-
-<p align="center">
-<img src= "https://user-images.githubusercontent.com/99407775/169956795-c0385c89-680b-4c5b-b347-caa156600829.jpg" width="180" height="410"/> 
-<img src= "https://user-images.githubusercontent.com/99407775/169956846-9995cc3d-dc69-4b52-b792-9e0ddcacc683.jpg" width="180" height="410"/> 
-<img src="https://user-images.githubusercontent.com/99407775/169956928-c4f8def2-fb22-422d-87e7-a7f43fedf070.jpg" width="180" height="410"/>
-</p>
 
 ---
 
