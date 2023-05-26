@@ -8,7 +8,7 @@ import com.mygdx.zombieland.weapon.rifle.RifleType;
 public class InventoryRifle extends AbstractInventoryGun {
     private final String name;
     public InventoryRifle() {
-        super(Input.Keys.NUM_2, new Rifle(RifleType.RIFLE), 999999999, 999999999);
+        super(Input.Keys.NUM_2, new Rifle(RifleType.RIFLE), 30*10, 30);
         this.name = "Rifle";
     }
 

@@ -154,50 +154,60 @@ public class HUD implements Renderable {
             bulletSprite.setColor(1, 1, 1, this.world.getGameSetting()
                     .getHudVisibleLevel());
         }
-//        this.world.font.setColor(Color.YELLOW);
+        this.world.font.setColor(Color.YELLOW);
         this.world.font.draw(this.world.getBatch(), String.format("%s", this.getWorld().getPlayer()
-                .getCurrentHandItem().getName()), 800 - (32 * 5), 64 + 18, 100, Align.center, true);
+                .getCurrentHandItem().getName()), 800 - (32 * 5), 64 , 100, Align.center, true);
 
-        InventoryItem currentHandItem = this.world.getPlayer().getCurrentHandItem();
+        InventoryItem currentHandItem = this.getWorld().getPlayer().getCurrentHandItem();
+
         if (currentHandItem instanceof InventoryGun) {
-
-            InventoryGun currentHandGun = (InventoryGun) currentHandItem;
-            Weapon weapon = currentHandGun.getWeapon();
-            Gun gunWeapon = (Gun) weapon;
-
-            if (this.bulletSprites.size() != gunWeapon.getMaxAmmo()) {
-                for (int i = 0; i < gunWeapon.getMaxAmmo(); i++) {
-                    Sprite bullet = new Sprite(PistolProjectile.PISTOL_TEXTURE);
-                    bullet.setSize(32, 32);
-                    bullet.setPosition(800 - (32 * 6), 32 + (4 * i));
-
-                    this.bulletSprites.add(bullet);
-
-                }
-            }
-
-            this.world.font.draw(this.world.getBatch(),
-                    String.format("x %.0f",
-                            (Math.ceil((float) currentHandGun.getTotalAmmo() / 12))
-                    ),
-                    800 - (32 * 5),
-                    64,
-                    100,
-                    Align.center,
-                    true);
-
-            // Draw a bullet as iconic
-            for (int i = 0, spritesSize = bulletSprites.size(); i < spritesSize; i++) {
-
-                Sprite bulletSprite = bulletSprites.get(i);
-                if (i >= currentHandGun.getAmmo()) {
-                    bulletSprite.setColor(0, 0, 0, this.world.getGameSetting()
-                            .getHudVisibleLevel());
-                }
-                bulletSprite.draw(this.world.batch);
-            }
-
+            InventoryGun currentHandGun = (com.mygdx.zombieland.inventory.InventoryGun) currentHandItem;
+            this.world.font.setColor(Color.BLACK);
+            this.world.font.draw(this.world.getBatch(), String.format("%sx", currentHandGun.getAmmo()), 800 - (32 * 7), 64, 100, Align.center, true);
         }
+
+
+
+//        InventoryItem currentHandItem = this.world.getPlayer().getCurrentHandItem();
+//        if (currentHandItem instanceof InventoryGun) {
+//
+//            InventoryGun currentHandGun = (InventoryGun) currentHandItem;
+//            Weapon weapon = currentHandGun.getWeapon();
+//            Gun gunWeapon = (Gun) weapon;
+//
+//            if (this.bulletSprites.size() != gunWeapon.getMaxAmmo()) {
+//                for (int i = 0; i < gunWeapon.getMaxAmmo(); i++) {
+//                    Sprite bullet = new Sprite(PistolProjectile.PISTOL_TEXTURE);
+//                    bullet.setSize(32, 32);
+//                    bullet.setPosition(800 - (32 * 6), 32 + (4 * i));
+//
+//                    this.bulletSprites.add(bullet);
+//
+//                }
+//            }
+//
+//            this.world.font.draw(this.world.getBatch(),
+//                    String.format("x %.0f",
+//                            (Math.ceil((float) currentHandGun.getTotalAmmo() / 12))
+//                    ),
+//                    800 - (32 * 5),
+//                    64,
+//                    100,
+//                    Align.center,
+//                    true);
+//
+//            // Draw a bullet as iconic
+//            for (int i = 0, spritesSize = bulletSprites.size(); i < spritesSize; i++) {
+//
+//                Sprite bulletSprite = bulletSprites.get(i);
+//                if (i >= currentHandGun.getAmmo()) {
+//                    bulletSprite.setColor(0, 0, 0, this.world.getGameSetting()
+//                            .getHudVisibleLevel());
+//                }
+////                bulletSprite.draw(this.world.batch);
+//            }
+//
+//        }
     }
 
 
