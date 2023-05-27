@@ -79,7 +79,7 @@ public class World implements Renderable {
     private final FastMatrix<Boolean> movableMask;
 
     public World(SpriteBatch batch) {
-        this.gameSetting = new GameSetting();
+        this.gameSetting = GameSetting.getInstance();
         this.batch = batch;
         this.scheduler = new Scheduler();
 
