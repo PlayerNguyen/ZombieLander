@@ -1,17 +1,19 @@
 package com.mygdx.zombieland.setting;
 
-public class GameSetting {
-
-    private float musicSoundLevel = 1f;
-    private float vfxSoundLevel = 0.4f;
+public final class GameSetting {
+    public static GameSetting instance;
+    private float musicSoundLevel = 0.6f;
+    private float vfxSoundLevel = 0.6f;
     private float hudVisibleLevel = 0.6f;
 
-    public GameSetting(float musicSoundLevel, float vfxSoundLevel) {
-        this.musicSoundLevel = musicSoundLevel;
-        this.vfxSoundLevel = vfxSoundLevel;
-    }
 
-    public GameSetting() {
+    private GameSetting() {}
+
+    public static GameSetting getInstance() {
+        if(instance == null){
+            instance = new GameSetting();
+        }
+        return instance;
     }
 
     public float getMusicSoundLevel() {
