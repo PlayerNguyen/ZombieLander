@@ -12,6 +12,8 @@ import com.mygdx.zombieland.entity.Player;
 import com.mygdx.zombieland.entity.undestructable.Fence;
 import com.mygdx.zombieland.location.Location;
 import com.mygdx.zombieland.location.Vector2D;
+import com.mygdx.zombieland.path.Path;
+import com.mygdx.zombieland.path.PathFinder;
 import com.mygdx.zombieland.state.GameState;
 import com.mygdx.zombieland.utils.*;
 
@@ -30,6 +32,7 @@ public class Zombie extends EnemyAbstract {
     private final World world;
     private final Entity target;
     private final ZombieType type;
+    private FastMatrix<Double> bfs;
 
     private Location destination;
     private float speed; // Zombie movement speed
@@ -40,7 +43,8 @@ public class Zombie extends EnemyAbstract {
     private long lastPathUpdate;
     //    boolean[][] visited = new boolean[801][601];
 //    private final FastMatrix<Boolean> visited = new FastMatrix<>();
-    private final FastMatrix<Vector2D> paths = new FastMatrix<>();
+    private final FastMatrix<Path> paths = new FastMatrix<>();
+    PathFinder pathFinder = new PathFinder(new Location(0, 0), new Location(300, 300));
 
     public Zombie(World world, Location startLocation, Entity target, ZombieType type) {
         super(startLocation, new Vector2D(), null, null, type.getHealth());
@@ -63,6 +67,10 @@ public class Zombie extends EnemyAbstract {
         // Set direction to the target
         this.getDirection().x = Math.sin(this.getRotation());
         this.getDirection().y = -Math.cos(this.getRotation());
+
+        pathFinder.setSource(this.getLocation());
+        pathFinder.setTarget(this.target.getLocation());
+        pathFinder.addRestricted(this.getWorld().getMovableMask());
     }
 
     @Override
@@ -89,9 +97,9 @@ public class Zombie extends EnemyAbstract {
 
         // Clear old position values
         for (Set<Entity> lastUpdateChunkSet : this.lastUpdateChunks) {
-           if (lastUpdateChunkSet != null) {
-               lastUpdateChunkSet.remove(this);
-           }
+            if (lastUpdateChunkSet != null) {
+                lastUpdateChunkSet.remove(this);
+            }
         }
         this.lastUpdateChunks.clear();
 
@@ -106,6 +114,7 @@ public class Zombie extends EnemyAbstract {
 
             // Draw visited predict to target nodes
             VisualizeHelper.drawFastMatrix(this.getWorld(), this.paths, ZOMBIE_DEBUG_MAP_DENSITY, 1F, Color.YELLOW);
+            VisualizeHelper.drawFastMatrix(this.getWorld(), bfs, 1, 1, Color.CYAN);
         }
 
 
@@ -113,33 +122,67 @@ public class Zombie extends EnemyAbstract {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-
+                    long a = System.currentTimeMillis();
                     findTarget(getLocation(), target.getLocation());
+
+                    System.out.println("Find path in " + (System.currentTimeMillis() - a) + " ms");
                 }
             }).start();
+            long a = System.currentTimeMillis();
+            bfs = pathFinder.getPath((this.getSize() / 2));
+            System.out.println("Find A* path in " + (System.currentTimeMillis() - a) + " ms");
             this.lastPathUpdate = System.currentTimeMillis();
+
+            Vector2D minVector = new Vector2D();
+            for (Map.Entry<FastMatrix.Key, Double> entry : bfs.entrySet()) {
+                int x = entry.getKey().x;
+                int y = entry.getKey().y;
+                Location predictLocation = new Location(x, y);
+
+                minVector.set((predictLocation.x - this.getLocation().x), (predictLocation.y - this.getLocation().y));
+                break;
+            }
+            minVector.normalize();
+            System.out.println("minVector = " + minVector);
+            this.getDirection().set(minVector.x * speed * Gdx.graphics.getDeltaTime(), minVector.y * speed * Gdx.graphics.getDeltaTime());
         }
 
-        for (Entity entity : this.world.getEntities()) {
-            if (!(entity instanceof Fence) && !(entity instanceof Player)) {
-                continue;
+        boolean isMovable = true;
+        Location blockedPosition = null;
+        EntityMask entityMask = this.getWorld().getEntityMask(this);
+        for (int x = entityMask.getLeft() + 6; x < entityMask.getRight() - 6; x++) {
+            for (int y = entityMask.getBottom() + 6; y < entityMask.getTop() - 6; y++) {
+                Boolean isBlocked = this.getWorld().getMovableMask().get(
+                        x, y
+                );
+                if (isBlocked != null && isBlocked) {
+                    isMovable = false;
+                    blockedPosition = new Location(x, y);
+                    break;
+                }
             }
-
-            Rectangle rectangle = new Rectangle(this.getCenterLocation(), ZOMBIE_SIZE, ZOMBIE_SIZE);
-            if (!rectangle.isCollided(new Rectangle(entity.getCenterLocation(), entity.getSize(), entity.getSize()))) {
-                // pass
-                continue;
-            }
-            break;
         }
+        Vector2D inverseVector = this.getDirection().getInverseVector(this.getLocation());
+        VisualizeHelper.simulateVector(this.getWorld(), this.getLocation(), inverseVector, Color.BLACK);
+        if (isMovable) {
+
+            this.translate((float) this.getDirection().x * speed * Gdx.graphics.getDeltaTime(),
+                    (float) this.getDirection().y * speed * Gdx.graphics.getDeltaTime());
+        } else {
+            // Push the zombie out a little bit by
+            // get the nearest blocked region,
+            // and find a vector that opposite with it
+            // and push the zombie out
+            System.out.println("Collision triggered");
 
 
-        this.translate((float) this.getDirection().x * speed * Gdx.graphics.getDeltaTime(), (float) this.getDirection().y * speed * Gdx.graphics.getDeltaTime());
+//            this.translate((float) (inverseVector.x * speed * Gdx.graphics.getDeltaTime()), (float) (inverseVector.y * speed * Gdx.graphics.getDeltaTime()));
+        }
         rotateToTarget();
     }
 
     static enum Direction {
-        TOP_LEFT, BOTTOM_LEFT, TOP_RIGHT, BOTTOM_RIGHT
+        TOP_LEFT, BOTTOM_LEFT, TOP_RIGHT, BOTTOM_RIGHT, TOP, LEFT, RIGHT, BOTTOM
     }
 
     private Direction predictDirection(Location start, Location end) {
@@ -150,96 +193,125 @@ public class Zombie extends EnemyAbstract {
         if (degrees < 0.0) {
             degrees += 360.0;
         }
-
-        if (degrees >= 0 && degrees < 90) {
+        if (degrees == 0) {
+            return Direction.RIGHT;
+        }
+        if (degrees > 0 && degrees < 90) {
             return Direction.TOP_RIGHT;
         }
-        if (degrees >= 90 && degrees < 180) {
+        if (degrees == 90) {
+            return Direction.TOP;
+        }
+        if (degrees > 90 && degrees < 180) {
             return Direction.TOP_LEFT;
         }
-        if (degrees >= 180 && degrees < 270) {
+        if (degrees == 180) {
+            return Direction.LEFT;
+        }
+        if (degrees > 180 && degrees < 270) {
             return Direction.BOTTOM_LEFT;
         }
-      
+        if (degrees == 270) {
+            return Direction.BOTTOM;
+        }
         return Direction.BOTTOM_RIGHT;
     }
 
     public void findTarget(Location start, Location end) {
 //        this.visited.clear();
-        this.paths.clear();
-        Direction predictDirection = predictDirection(start, end);
+//        this.paths.clear();
+//        Direction predictDirection = predictDirection(start, end);
+//
+//        Queue<CoordinateHelper.Coordinate> cq = new PriorityQueue<>();
+//        cq.add(new CoordinateHelper.Coordinate(start));
+//        this.paths.set((int) start.x, (int) start.y, new Path(new Vector2D(0, 0), start.distance(end)));
+//
+//        while (!cq.isEmpty()) {
+//            CoordinateHelper.Coordinate curCoordinate = cq.poll();
+//
+//            if (curCoordinate.x == end.x && curCoordinate.y == end.y) break;
+//
+//            int[] xMap = new int[]{};
+//            int[] yMap = new int[]{};
+//            switch (predictDirection) {
+//                case TOP_RIGHT: {
+//                    xMap = new int[]{1, 0, 1};
+//                    yMap = new int[]{0, 1, 1};
+//                    break;
+//                }
+//                case TOP_LEFT: {
+//                    xMap = new int[]{-1, 0, -1};
+//                    yMap = new int[]{0, 1, 1};
+//                    break;
+//                }
+//                case BOTTOM_LEFT: {
+//                    xMap = new int[]{-1, 0, -1};
+//                    yMap = new int[]{0, -1, -1};
+//                    break;
+//                }
+//                case BOTTOM_RIGHT: {
+//                    xMap = new int[]{0, 1, 1};
+//                    yMap = new int[]{-1, 0, -1};
+//                    break;
+//                }
+//                case RIGHT: {
+//                    xMap = new int[]{1};
+//                    yMap = new int[]{0};
+//                    break;
+//                }
+//                case TOP: {
+//                    xMap = new int[]{0};
+//                    yMap = new int[]{1};
+//                    break;
+//                }
+//                case LEFT: {
+//                    xMap = new int[]{-1};
+//                    yMap = new int[]{0};
+//                    break;
+//                }
+//                case BOTTOM: {
+//                    xMap = new int[]{0};
+//                    yMap = new int[]{-1};
+//                    break;
+//                }
+//                default: {
+//                    break;
+//                }
+//            }
+//            for (int i = 0; i < xMap.length; i++) {
+//                int x = (int) (curCoordinate.x + xMap[i]);
+//                int y = (int) (curCoordinate.y + yMap[i]);
+//
+//                if (x < 0 || y < 0) continue;
+//                if (x >= World.WINDOW_WIDTH || y >= World.WINDOW_HEIGHT) continue;
+//
+//                // add blocking way here
+//                if (!allowMove(new CoordinateHelper.Coordinate(x, y))) {
+//                    continue;
+//                }
+//
+//                if (!paths.contains(x, y)) {
+////                    visited.set(x, y, true);
+//
+//                    // Set to the next point
+//                    paths.set(x, y, new Vector2D(xMap[i], yMap[i]));
+//                    cq.add(new CoordinateHelper.Coordinate(x, y));
+//                }
+//            }
+//        }
 
-        Queue<CoordinateHelper.Coordinate> cq = new ArrayDeque<>();
-        cq.add(new CoordinateHelper.Coordinate(start));
-        this.paths.set((int) start.x, (int) start.y, new Vector2D(0, 0));
-
-        while (!cq.isEmpty()) {
-            CoordinateHelper.Coordinate curCoordinate = cq.poll();
-
-            if (curCoordinate.x == end.x && curCoordinate.y == end.y) break;
-
-            int[] xMap = new int[]{};
-            int[] yMap = new int[]{};
-            switch (predictDirection) {
-                case TOP_RIGHT: {
-                    xMap = new int[]{1, 0, 1};
-                    yMap = new int[]{0, 1, 1};
-                    break;
-                }
-                case TOP_LEFT: {
-                    xMap = new int[]{-1, 0, -1};
-                    yMap = new int[]{0, 1, 1};
-                    break;
-                }
-                case BOTTOM_LEFT: {
-                    xMap = new int[]{-1, 0, -1};
-                    yMap = new int[]{0, -1, -1};
-                    break;
-                }
-                case BOTTOM_RIGHT: {
-                    xMap = new int[]{0, 1, 1};
-                    yMap = new int[]{-1, 0, -1};
-                    break;
-                }
-                default: {
-                    break;
-                }
-            }
-
-            for (int i = 0; i < xMap.length; i++) {
-                int x = (int) (curCoordinate.x + xMap[i]);
-                int y = (int) (curCoordinate.y + yMap[i]);
-
-                if (x < 0 || y < 0) continue;
-                if (x >= World.WINDOW_WIDTH || y >= World.WINDOW_HEIGHT) continue;
-
-                // add blocking way here
-                if (!allowMove(new CoordinateHelper.Coordinate(x, y))) {
-                    continue;
-                }
-
-                if (!paths.contains(x, y)) {
-//                    visited.set(x, y, true);
-
-                    // Set to the next point
-                    paths.set(x, y, new Vector2D(xMap[i], yMap[i]));
-                    cq.add(new CoordinateHelper.Coordinate(x, y));
-                }
-            }
-        }
-
-        Vector2D minVector = new Vector2D(Integer.MAX_VALUE, Integer.MAX_VALUE);
-
-        for (Map.Entry<FastMatrix.Key, Vector2D> entry : paths.entrySet()) {
-            Vector2D vec = entry.getValue();
-            Location curLocation = new Location(start).add(vec);
-            Location minLocation = new Location(start).add(minVector);
-
-            if (curLocation.distance(end) < minLocation.distance(end)) {
-                minVector = vec;
-            }
-        }
-        this.getDirection().set(minVector.x, minVector.y);
+//        Vector2D minVector = new Vector2D(Integer.MAX_VALUE, Integer.MAX_VALUE);
+//
+//        for (Map.Entry<FastMatrix.Key, Vector2D> entry : paths.entrySet()) {
+//            Vector2D vec = entry.getValue();
+//            Location curLocation = new Location(start).add(vec);
+//            Location minLocation = new Location(start).add(minVector);
+//
+//            if (curLocation.distance(end) < minLocation.distance(end)) {
+//                minVector = vec;
+//            }
+//        }
+//        this.getDirection().set(minVector.x, minVector.y);
     }
 
     private boolean allowMove(CoordinateHelper.Coordinate coordinate) {

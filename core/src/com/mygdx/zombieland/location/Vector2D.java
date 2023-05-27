@@ -45,6 +45,11 @@ public class Vector2D {
         }
     }
 
+    public Vector2D getInverseVector(Location root) {
+        double length = root.distance(new Location((float) this.x, (float) this.y));
+        return new Vector2D(-length * this.x, -length * this.y);
+    }
+
     @Override
     public String toString() {
         return "Vector2D{" +

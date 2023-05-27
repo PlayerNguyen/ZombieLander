@@ -1,6 +1,6 @@
 package com.mygdx.zombieland.location;
 
-public class Location {
+public class Location implements Comparable<Location> {
 
     public float x;
     public float y;
@@ -92,6 +92,12 @@ public class Location {
         this.x *= scalar;
         this.y *= scalar;
         return this;
+    }
+
+    @Override
+    public int compareTo(Location o) {
+        if (this.x == o.x && this.y == o.y) return 0;
+        return (int) this.distance(o);
     }
 
     @Override

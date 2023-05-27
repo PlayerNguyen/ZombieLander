@@ -37,7 +37,7 @@ public class VisualizeHelper {
     }
 
     public static void simulateVector(World world, Location start, Vector2D vector2D, Color color) {
-        Location offsetLocation = new Location(start).add(vector2D);
+        Location offsetLocation = new Location(start).add(vector2D).scalar(100);
         simulateLine(world, start, offsetLocation, color);
     }
 
