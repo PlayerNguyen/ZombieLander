@@ -34,11 +34,9 @@ public abstract class AbstractProjectile implements Projectile {
         this.location = new Location(source.getLocation());
         this.texture = texture;
         this.sprite = new Sprite(texture);
-        Location sourceLocation = source.getLocation();
 
         this.rotation = source.getAngle();
 
-        Location currentLocation = new Location(this.getLocation());
         this.damage = this.source.getWeapon().getDamage();
         this.textureSize = textureSize;
         this.knockbackPower = this.source.getWeapon().getKnockbackPower();

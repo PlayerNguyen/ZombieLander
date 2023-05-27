@@ -16,6 +16,10 @@ import com.mygdx.zombieland.effects.TextIndicator;
 import com.mygdx.zombieland.entity.Entity;
 import com.mygdx.zombieland.entity.Player;
 import com.mygdx.zombieland.entity.projectile.Projectile;
+import com.mygdx.zombieland.entity.enemy.Zombie;
+import com.mygdx.zombieland.entity.enemy.ZombieType;
+import com.mygdx.zombieland.entity.undestructable.Fence;
+
 import com.mygdx.zombieland.hud.HUD;
 import com.mygdx.zombieland.inventory.Inventory;
 import com.mygdx.zombieland.inventory.InventoryPistol;
@@ -28,8 +32,12 @@ import com.mygdx.zombieland.spawner.BoxSpawner;
 import com.mygdx.zombieland.spawner.Spawner;
 import com.mygdx.zombieland.spawner.ZombieSpawner;
 import com.mygdx.zombieland.state.GameState;
+import com.mygdx.zombieland.utils.EntityMask;
+import com.mygdx.zombieland.utils.FastMatrix;
+import com.mygdx.zombieland.utils.VisualizeHelper;
 
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import static com.mygdx.zombieland.state.GameState.PAUSING;
@@ -37,11 +45,17 @@ import static com.mygdx.zombieland.state.GameState.PLAYING;
 
 public class World implements Renderable {
 
-    private static final int WINDOW_WIDTH = 800;
-    private static final int WINDOW_HEIGHT = 600;
+    public static final int WINDOW_WIDTH = 800;
+    public static final int WINDOW_HEIGHT = 600;
     private static final Texture BACKGROUND_TEXTURE = new Texture(Gdx.files.internal("background.png"));
     private static final Texture LOGO_TEXTURE = new Texture(Gdx.files.internal("logo.png"));
     private static final Music BGM_SOUND = Gdx.audio.newMusic(Gdx.files.internal("audio/BGM.mp3"));
+
+    private static boolean isMoveUp = false;
+
+    private static boolean isMoveDown = false;
+    private static boolean isMoveLeft = false;
+    private static boolean isMoveRight = false;
 
     public SpriteBatch batch;
     public BitmapFont font;
@@ -60,10 +74,12 @@ public class World implements Renderable {
     private final Scheduler scheduler;
     private final TextIndicator textIndicator;
     private final HUD hud;
-
+    //    private final MapRenderer<Entity> entitiesMap;
+    private final FastMatrix<Set<Entity>> entitiesMap;
+    private final FastMatrix<Boolean> movableMask;
 
     public World(SpriteBatch batch) {
-        this.gameSetting = GameSetting.getInstance();
+        this.gameSetting = new GameSetting();
         this.batch = batch;
         this.scheduler = new Scheduler();
 
@@ -76,7 +92,10 @@ public class World implements Renderable {
         this.hud = new HUD(this);
         this.debug = false;
         this.inventory = new Inventory(this);
+        this.entitiesMap = new FastMatrix<>();
+        this.movableMask = new FastMatrix<>();
     }
+
 
     @Override
     public void create() {
@@ -91,6 +110,9 @@ public class World implements Renderable {
         this.player = new Player(this);
         this.player.create();
 
+        this.entities.add(new Fence(this, new Location(200, 255)));
+        this.entities.add(new Fence(this, new Location(800-200, 300)));
+
         // Load entities
         for (Entity entity : entities) {
             entity.create();
@@ -104,17 +126,19 @@ public class World implements Renderable {
         // Load spawners
         // Zombie spawner
         this.spawners.clear();
+                this.spawners.add(new ZombieSpawner(this,
+                new Location(20, 300), 0, 2500));
         this.spawners.add(new ZombieSpawner(this,
-                new Location(15, 300), 50f, 5000));
-        this.spawners.add(new ZombieSpawner(this,
-                new Location(15, 300), 50f, 5000));
-        this.spawners.add(new ZombieSpawner(this,
-                new Location(15, 300), 50f, 5000));
-        this.spawners.add(new ZombieSpawner(this,
-                new Location(15, 300), 50f, 5000));
+                new Location(800-20, 300), 0, 2500));
+//        this.spawners.add(new ZombieSpawner(this,
+//                new Location(15, 300), 80f, 5000));
+//        this.spawners.add(new ZombieSpawner(this,
+//                new Location(60, 300), 80f, 2000));
+
+
         // Box spawner
-        this.spawners.add(new BoxSpawner(this, new Location(this.getPlayer().getLocation()),
-                120f, 12000));
+//        this.spawners.add(new BoxSpawner(this, new Location(this.getPlayer().getLocation()),
+//                120f, 12000));
         for (Spawner spawner : this.spawners) {
             spawner.create();
         }
@@ -242,7 +266,13 @@ public class World implements Renderable {
 
                 this.hud.render();
 
-                // Music pause
+                // Key movement register
+                if (isMoveUp) player.moveUp();
+                if (isMoveDown) player.moveDown();
+                if (isMoveLeft) player.moveLeft();
+                if (isMoveRight) player.moveRight();
+
+//                 Music pause
                 if (this.getGameState() == PAUSING && BGM_SOUND.isPlaying()) {
                     BGM_SOUND.pause();
                 }
@@ -251,7 +281,7 @@ public class World implements Renderable {
                     BGM_SOUND.play();
                 }
 
-                // Esc to pause
+//                 Esc to pause
                 Gdx.input.setInputProcessor(new InputProcessor() {
                     @Override
                     public boolean keyDown(int keycode) {
@@ -266,6 +296,30 @@ public class World implements Renderable {
                             }
                             return true;
                         }
+
+
+                        if (keycode == Input.Keys.W) {
+
+                            isMoveUp = true;
+
+                        }
+                        if (keycode == Input.Keys.S) {
+
+                            isMoveDown = true;
+
+                        }
+                        if (keycode == Input.Keys.A) {
+
+                            isMoveLeft = true;
+
+                        }
+
+                        if (keycode == Input.Keys.D) {
+
+                            isMoveRight = true;
+
+                        }
+
 
                         // Debug shortcut
                         if (keycode == Input.Keys.F3) {
@@ -283,6 +337,18 @@ public class World implements Renderable {
 
                     @Override
                     public boolean keyUp(int keycode) {
+                        if (keycode == Input.Keys.W) {
+                            isMoveUp = false;
+                        }
+                        if (keycode == Input.Keys.S) {
+                            isMoveDown = false;
+                        }
+                        if (keycode == Input.Keys.A) {
+                            isMoveLeft = false;
+                        }
+                        if (keycode == Input.Keys.D) {
+                            isMoveRight = false;
+                        }
                         return false;
                     }
 
@@ -326,10 +392,14 @@ public class World implements Renderable {
 
                 break;
             }
-
             default: {
                 throw new UnsupportedOperationException();
             }
+        }
+
+        // Render block movement area if user are in debug mode
+        if (this.isDebug()) {
+            VisualizeHelper.drawFastMatrix(this, this.getMovableMask(), 4, 1, Color.RED);
         }
     }
 
@@ -361,7 +431,7 @@ public class World implements Renderable {
     }
 
     public boolean removeEntity(Entity entity) {
-//        entity.dispose();
+        entity.dispose();
         return this.entities.remove(entity);
     }
 
@@ -461,5 +531,69 @@ public class World implements Renderable {
         this.create();
 
         this.setGameState(PLAYING);
+    }
+
+    public FastMatrix<Set<Entity>> getEntitiesMap() {
+        return entitiesMap;
+    }
+
+    public Collection<Set<Entity>> updateEntityMaskPosition(Entity entity) {
+        Collection<Set<Entity>> updatedSets = new ArrayList<>();
+        if (!(entity.getLocation().x > 0)
+                || !(entity.getLocation().y > 0)
+                || !(entity.getLocation().x < World.WINDOW_WIDTH)
+                || !(entity.getLocation().y < World.WINDOW_HEIGHT)
+        ) {
+            return updatedSets;
+        }
+
+        EntityMask entityMask = this.getEntityMask(entity);
+
+        for (int x = entityMask.getLeft(); x < entityMask.getRight(); x++) {
+            for (int y = entityMask.getBottom(); y < entityMask.getTop(); y++) {
+                // Set entity chunk
+                Set<Entity> currentChunk = entity.getWorld()
+                        .getEntitiesMap()
+                        .get(x, y);
+
+                // Create a new set and interact with a value of the set
+                if (currentChunk == null) {
+                    Set<Entity> entities = Collections.newSetFromMap(new ConcurrentHashMap<Entity, Boolean>());
+                    entities.add(entity);
+                    entity.getWorld().getEntitiesMap().set(x, y, entities);
+                    updatedSets.add(entities);
+                    continue;
+                }
+
+                currentChunk.add(entity);
+                updatedSets.add(currentChunk);
+            }
+        }
+        return updatedSets;
+    }
+
+    /**
+     * Returns the value of the entity position, which addition with size.
+     * The result is an array of numbers contains a position as clock-wise position started from the top.
+     *
+     * @param entity the entity to get mask
+     * @return an array of numbers contains a position as clock-wise position started from the top.
+     */
+    public EntityMask getEntityMask(Entity entity) {
+        int left = (int) (entity.getLocation().x - entity.getSize() / 2);
+        int bottom = (int) (entity.getLocation().y - entity.getSize() / 2);
+        int top = (int) (entity.getLocation().y + entity.getSize() / 2);
+        int right = (int) (entity.getLocation().x + entity.getSize() / 2);
+
+        return new EntityMask(top, right, bottom, left);
+    }
+
+    public void setBlockMoveAtPosition(int x, int y, boolean isBlockMove) {
+        // Set movable mask
+        this.movableMask.set(x, y, isBlockMove);
+    }
+
+    public FastMatrix<Boolean> getMovableMask() {
+        return movableMask;
     }
 }

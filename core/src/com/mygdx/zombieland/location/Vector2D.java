@@ -36,6 +36,15 @@ public class Vector2D {
         return this;
     }
 
+    public void normalize() {
+        double length = Math.sqrt(x * x + y * y);
+        if (length != 0.0) {
+            double s = 1.0 / length;
+            x *= s;
+            y *= s;
+        }
+    }
+
     @Override
     public String toString() {
         return "Vector2D{" +

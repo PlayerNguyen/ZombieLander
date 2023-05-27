@@ -64,11 +64,15 @@ public class TextIndicator implements Effect, Renderable {
         return items;
     }
 
-    public void createText(Location location, Vector2D offset, String text, long duration, float speed, Color color) {
-        this.items.add(new TextItem(location, offset, duration, text, speed, color));
+    public TextItem createText(Location location, Vector2D offset, String text, long duration, float speed, Color color) {
+        TextItem textItem = new TextItem(location, offset, duration, text, speed, color);
+        this.items.add(textItem);
+        return textItem;
     }
-    public void createText(Location location, Vector2D offset, String text, long duration, float speed) {
-        this.items.add(new TextItem(location, offset, duration, text, speed, Color.RED));
+    public TextItem createText(Location location, Vector2D offset, String text, long duration, float speed) {
+        TextItem textItem = new TextItem(location, offset, duration, text, speed, Color.RED);
+        this.items.add(textItem);
+        return textItem;
     }
 
     public TextIndicator(World world) {
